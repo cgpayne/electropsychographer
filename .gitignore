@@ -1,3 +1,6 @@
+user_config.py
+**/__pycache__/*
+
 data/*
 !data/my_meta.txt
 !data/wcl_data.txt
