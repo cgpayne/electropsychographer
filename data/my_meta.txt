@@ -1,3 +1,14 @@
-group:
+group (subjects)
 	0 = control (32)
 	1 = schizophrenia (49)
+
+trials ?= i-th tone played
+	1 - 100
+
+conditions ?= experimental modes
+	0 ?= tones played
+	1 ?= play recorded tones
+	2 ?= button alone (control)
+
+samples = time points, see archive/time.csv
+	1 - 3072 (-1500ms - +1500ms)
