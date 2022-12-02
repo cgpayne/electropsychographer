@@ -13,9 +13,9 @@
 #  [none]
 # DESIRED FEATURES
 #  -- add a time stamp
-#  -- make the patient data frames into a class?
 
 # external imports
+import time
 import csv
 import pandas as pd
 # from tsfresh import extract_features
@@ -23,6 +23,7 @@ import pandas as pd
 
 # internal imports
 from config import user_config as cfg
+import utils.utils as ut
 
 
 # CLASS: PatientDF = a pandas data frame with properties for a patient sample
@@ -55,8 +56,9 @@ class PatientDF():
         self.df.reset_index(inplace=True, drop=True)
 
 
-# FUNCTION: print_first_three = print the first three patient dataframes
+# FUNCTION: print_first_three = print the first three patient data frames
 def print_first_three(pat_dat):
+    print("\n- printing first three data frames")
     for pp in list(pat_dat.keys())[:3]:
         print(f"~~~~ patient {pp}, df =")
         print(pat_dat[pp].df, '\n')
@@ -70,6 +72,9 @@ def tss(row):
 
 
 if __name__ == '__main__':
+    t_zero = time.time()  # start the clock
+    t_now = t_zero
+    
     # load in the data
     print("- load in the data")
     pat_dat = {}  # a dictionary of PatientDF's per patient
@@ -77,6 +82,7 @@ if __name__ == '__main__':
         print(f"  -- loading in for patient {pp}...")
         pat_dat[pp] = PatientDF(pd.read_csv(cfg.archive + '/' + str(pp) + '.csv/' + str(pp) + '.csv', header=None))
         print("     ...done.")
+        t_now = ut.time_stamp(t_now, t_zero, str(pp))  # TIME STAMP
     
     # grab the header, tidy up, and separate out the chosen condition
     with open(cfg.archive + '/columnLabels.csv', 'r') as fin:
@@ -87,6 +93,7 @@ if __name__ == '__main__':
     for pp in pat_dat:
         pat_dat[pp].tidy_up(header)
         pat_dat[pp].set_condition(cfg.selected_condition)
+    t_now = ut.time_stamp(t_now, t_zero, 'tidy up + set condition')  # TIME STAMP
     
     print_first_three(pat_dat)
     
@@ -96,6 +103,7 @@ if __name__ == '__main__':
         print(f"  -- lining up for patient {pp}...")
         pat_dat[pp].line_up_time_series()
         print("     ...done.")
+        t_now = ut.time_stamp(t_now, t_zero, str(pp))  # TIME STAMP
     
     print_first_three(pat_dat)
 
