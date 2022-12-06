@@ -12,7 +12,7 @@
 # KNOWN BUGS
 #  [none]
 # DESIRED FEATURES
-#  -- add a time stamp
+#  [none]
 
 # external imports
 import time
@@ -22,6 +22,7 @@ from tsfresh import extract_features
 # from tsfresh.utilities.dataframe_functions import impute
 
 # internal imports
+import params.params as p_epg
 from config import user_config as cfg
 import utils.utils as ut
 
@@ -67,7 +68,7 @@ def print_first_three(pat_dat):
 # FUNCTION: tss = put the time series in series wrt trial
 #   IN/OUT: row = a row of the patient data frame
 def tss(row):
-    row['sample'] += (row['trial']-1)*cfg.sample_count
+    row['sample'] += (row['trial']-1)*p_epg.sample_count
     return row
 
 
@@ -79,14 +80,14 @@ if __name__ == '__main__':
     # load in the data
     print("- loading in the data")
     pat_dat = {}  # a dictionary of PatientDF's per patient
-    for pp in cfg.patients:
+    for pp in cfg.patients_fg:
         print(f"  -- loading in for patient {pp}...")
-        pat_dat[pp] = PatientDF(pd.read_csv(cfg.archive + '/' + str(pp) + '.csv/' + str(pp) + '.csv', header=None))
+        pat_dat[pp] = PatientDF(pd.read_csv(cfg.archive_dir + '/' + str(pp) + '.csv/' + str(pp) + '.csv', header=None))
         print("     ...done.")
         t_now = ut.time_stamp(t_now, t_zero, str(pp))  # TIME STAMP
     
     # grab the header, tidy up, and separate out the chosen condition
-    with open(cfg.archive + '/columnLabels.csv', 'r') as fin:
+    with open(cfg.archive_dir + '/columnLabels.csv', 'r') as fin:
         header = list(csv.reader(fin))[0]
     print(f"  -- header = {header}\n")
     
@@ -116,7 +117,7 @@ if __name__ == '__main__':
     df_all_pats = df_all_pats.drop(columns=['condition', 'trial'])
     df_all_pats.reset_index(inplace=True, drop=True)
     
-    print("-- df_all_pats =")
+    print("  -- df_all_pats =")
     print(df_all_pats, '\n')
     t_now = ut.time_stamp(t_now, t_zero, "concatenation")  # TIME STAMP
     
@@ -124,7 +125,7 @@ if __name__ == '__main__':
     print("- generating the features using ts-fresh...")
     df_extracted = extract_features(df_all_pats, column_id="subject", column_sort="sample")
     print("  ...done.")
-    print("-- df_extracted =")
+    print("  -- df_extracted =")
     print(df_extracted, '\n')
     
 

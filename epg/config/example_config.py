@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#  user_config.py = holds parameters for the electropsychographer
+#  user_config.py = holds user configuration parameters for the electropsychographer
 #  from config import user_config as cfg
 #  By: Charlie Payne
 #  Licence: n/a
@@ -11,7 +11,7 @@
 # NOTES
 #  [none]
 # CONVENTIONS
-#  [none]
+#  -- all directory strings will not include a trailing slash
 # KNOWN BUGS
 #  [none]
 # DESIRED FEATURES
@@ -20,8 +20,15 @@
 import os
 
 
+# [shared]
+archive_dir = os.getcwd() + '/../data/sub_archive'
+pruned_dir = os.getcwd() + '/../data/pruned'
+
+# data_pruning.py
+patients_dp = {
+               1: 100, 2: 100,
+              }  # keys = patient, values = late-stage trial with all three conditions
+
 # feature_gen.py
-patients = [1, 2]
-archive = os.getcwd() + '/../data/archive'
+patients_fg = [1, 2, 67]
 selected_condition = 1
-sample_count = 3072

@@ -23,6 +23,8 @@ def time_stamp(t_del, t_zero, stamp):
     t_abs = t_now - t_zero
     t_rel = t_now - t_del
     
-    print(f"---< --<< -<<< TIME STAMP: {stamp} -<>- relative: {str(datetime.timedelta(seconds=t_rel))[:-3]} -<>- absolute: {str(datetime.timedelta(seconds=t_abs))[:-3]} >>>- >>-- >---")
+    time_front = f"\n---< --<< -<<< TIME STAMP: {stamp} -<>- relative: {str(datetime.timedelta(seconds=t_rel))[:-3]}"
+    time_back = f"-<>- absolute: {str(datetime.timedelta(seconds=t_abs))[:-3]} >>>- >>-- >---\n"
+    print(time_front + " " + time_back)
     
     return t_now
