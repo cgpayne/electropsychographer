@@ -18,7 +18,7 @@
 import time
 import csv
 import pandas as pd
-# from tsfresh import extract_features
+from tsfresh import extract_features
 # from tsfresh.utilities.dataframe_functions import impute
 
 # internal imports
@@ -72,6 +72,7 @@ def tss(row):
 
 
 if __name__ == '__main__':
+    ## manipulate the data into the desired form
     t_zero = time.time()  # start the clock
     t_now = t_zero
     
@@ -115,6 +116,16 @@ if __name__ == '__main__':
     df_all_pats = df_all_pats.drop(columns=['condition', 'trial'])
     df_all_pats.reset_index(inplace=True, drop=True)
     
-    print(df_all_pats)
+    print("-- df_all_pats =")
+    print(df_all_pats, '\n')
+    t_now = ut.time_stamp(t_now, t_zero, "concatenation")  # TIME STAMP
+    
+    ## feature generation using ts-fresh
+    print("- generating the features using ts-fresh...")
+    df_extracted = extract_features(df_all_pats, column_id="subject", column_sort="sample")
+    print("  ...done.")
+    print("-- df_extracted =")
+    print(df_extracted, '\n')
+    
 
 # F- I-- N---
