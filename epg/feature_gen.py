@@ -76,7 +76,7 @@ if __name__ == '__main__':
     t_now = t_zero
     
     # load in the data
-    print("- load in the data")
+    print("- loading in the data")
     pat_dat = {}  # a dictionary of PatientDF's per patient
     for pp in cfg.patients:
         print(f"  -- loading in for patient {pp}...")
@@ -89,7 +89,7 @@ if __name__ == '__main__':
         header = list(csv.reader(fin))[0]
     print(f"  -- header = {header}\n")
     
-    print("- restructure the data frames (tidy up + set condition)")
+    print("- restructuring the data frames (tidy up + set condition)")
     for pp in pat_dat:
         pat_dat[pp].tidy_up(header)
         pat_dat[pp].set_condition(cfg.selected_condition)
@@ -98,7 +98,7 @@ if __name__ == '__main__':
     print_first_three(pat_dat)
     
     # put the waves in series
-    print("- line up the trials into a series")
+    print("- lining up the trials into a series")
     for pp in pat_dat:
         print(f"  -- lining up for patient {pp}...")
         pat_dat[pp].line_up_time_series()
@@ -108,7 +108,7 @@ if __name__ == '__main__':
     print_first_three(pat_dat)
     
     # concatenate the data and remove unnecessary columns
-    print("- concatenate all the patient data")
+    print("- concatenating all the patient data")
     df_all_pats = pd.DataFrame({})
     for pp in pat_dat:
         df_all_pats = pd.concat([df_all_pats, pat_dat[pp].df])
