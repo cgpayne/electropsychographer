@@ -106,6 +106,15 @@ if __name__ == '__main__':
         t_now = ut.time_stamp(t_now, t_zero, str(pp))  # TIME STAMP
     
     print_first_three(pat_dat)
-
+    
+    # concatenate the data and remove unnecessary columns
+    print("- concatenate all the patient data")
+    df_all_pats = pd.DataFrame({})
+    for pp in pat_dat:
+        df_all_pats = pd.concat([df_all_pats, pat_dat[pp].df])
+    df_all_pats = df_all_pats.drop(columns=['condition', 'trial'])
+    df_all_pats.reset_index(inplace=True, drop=True)
+    
+    print(df_all_pats)
 
 # F- I-- N---
