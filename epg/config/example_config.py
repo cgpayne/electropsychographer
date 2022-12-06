@@ -20,5 +20,8 @@
 import os
 
 
+# feature_gen.py
 patients = [1, 2]
 archive = os.getcwd() + '/../data/archive'
+selected_condition = 1
+sample_count = 3072
