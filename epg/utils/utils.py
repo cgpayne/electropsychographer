@@ -18,6 +18,11 @@ import time
 import datetime
 
 
+# FUNCTION: time_stamp = create a time stamp within the code
+#       IN: t_del = the time of the last time point
+#           t_zero = the 0th time point
+#           stamp = a string identifier for the stamp itself
+#      OUT: << print out a time stamp to screen >>
 def time_stamp(t_del, t_zero, stamp):
     t_now = time.time()
     t_abs = t_now - t_zero
