@@ -46,15 +46,16 @@ class PatientDF():
     def set_condition(self, selected_condition):
         self.df = self.df[self.df['condition'] == selected_condition]
     
-    # METHOD: line_up_time_series = concatenate the time series in series wrt trial
-    def line_up_time_series(self):
-        # concatenate all the time series together
-        self.df[['sample', 'trial']] = \
-            self.df[['sample', 'trial']].apply(lambda row: tss(row), axis=1)
-        
-        # sort by sample
-        self.df = self.df.sort_values(by=['sample'])
-        self.df.reset_index(inplace=True, drop=True)
+    # OBSOLETE: now using only one trial via data_pruning.py
+    # # METHOD: line_up_time_series = concatenate the time series in series wrt trial
+    # def line_up_time_series(self):
+    #     # concatenate all the time series together
+    #     self.df[['sample', 'trial']] = \
+    #         self.df[['sample', 'trial']].apply(lambda row: tss(row), axis=1)
+    #
+    #     # sort by sample
+    #     self.df = self.df.sort_values(by=['sample'])
+    #     self.df.reset_index(inplace=True, drop=True)
 
 
 # FUNCTION: print_first_three = print the first three patient data frames
@@ -65,11 +66,12 @@ def print_first_three(pat_dat):
         print(pat_dat[pp].df, '\n')
 
 
-# FUNCTION: tss = put the time series in series wrt trial
-#   IN/OUT: row = a row of the patient data frame
-def tss(row):
-    row['sample'] += (row['trial']-1)*p_epg.sample_count
-    return row
+# OBSOLETE: now using only one trial via data_pruning.py
+# # FUNCTION: tss = put the time series in series wrt trial
+# #   IN/OUT: row = a row of the patient data frame
+# def tss(row):
+#     row['sample'] += (row['trial']-1)*p_epg.sample_count
+#     return row
 
 
 if __name__ == '__main__':
@@ -82,7 +84,7 @@ if __name__ == '__main__':
     pat_dat = {}  # a dictionary of PatientDF's per patient
     for pp in cfg.patients_fg:
         print(f"  -- loading in for patient {pp}...")
-        pat_dat[pp] = PatientDF(pd.read_csv(cfg.archive_dir + '/' + str(pp) + '.csv/' + str(pp) + '.csv', header=None))
+        pat_dat[pp] = PatientDF(pd.read_csv(cfg.pruned_dir + '/' + str(pp) + '.csv', header=None))
         print("     ...done.")
         t_now = ut.time_stamp(t_now, t_zero, str(pp))  # TIME STAMP
     
@@ -99,15 +101,16 @@ if __name__ == '__main__':
     
     print_first_three(pat_dat)
     
-    # put the waves in series
-    print("- lining up the trials into a series")
-    for pp in pat_dat:
-        print(f"  -- lining up for patient {pp}...")
-        pat_dat[pp].line_up_time_series()
-        print("     ...done.")
-        t_now = ut.time_stamp(t_now, t_zero, str(pp))  # TIME STAMP
-    
-    print_first_three(pat_dat)
+    # OBSOLETE: now using only one trial via data_pruning.py
+    # # put the waves in series
+    # print("- lining up the trials into a series")
+    # for pp in pat_dat:
+    #     print(f"  -- lining up for patient {pp}...")
+    #     pat_dat[pp].line_up_time_series()
+    #     print("     ...done.")
+    #     t_now = ut.time_stamp(t_now, t_zero, str(pp))  # TIME STAMP
+    #
+    # print_first_three(pat_dat)
     
     # concatenate the data and remove unnecessary columns
     print("- concatenating all the patient data")

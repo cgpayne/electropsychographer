@@ -26,7 +26,7 @@ pruned_dir = os.getcwd() + '/../data/pruned'
 
 # data_pruning.py
 patients_dp = {
-               1: 100, 2: 100,
+               1: 90, 2: 90, 67: 90,
               }  # keys = patient, values = late-stage trial with all three conditions
 
 # feature_gen.py

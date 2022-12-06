@@ -22,7 +22,6 @@ import time
 import pandas as pd
 
 # internal imports
-import params.params as p_epg
 from config import user_config as cfg
 import utils.utils as ut
 
