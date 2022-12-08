@@ -7,6 +7,8 @@
 #  [TBA]
 # NOTES
 #  [none]
+# RESOURCES
+#  -- https://tsfresh.readthedocs.io/en/latest/text/quick_start.html
 # CONVENTIONS
 #  [none]
 # KNOWN BUGS

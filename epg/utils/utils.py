@@ -7,6 +7,8 @@
 #  these utility functions are shared throughout the electropsychographer code
 # NOTES
 #  [none]
+# RESOURCES
+#  [none]
 # CONVENTIONS
 #  [none]
 # KNOWN BUGS

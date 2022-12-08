@@ -7,6 +7,8 @@
 #  these parameters are hard coded, in contrast to config/user_config.py
 # NOTES
 #  [none]
+# RESOURCES
+#  [none]
 # CONVENTIONS
 #  [none]
 # KNOWN BUGS
