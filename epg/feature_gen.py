@@ -91,7 +91,7 @@ if __name__ == '__main__':
         t_now = ut.time_stamp(t_now, t_zero, str(pp))  # TIME STAMP
     
     # grab the header, tidy up, and separate out the chosen condition
-    with open(cfg.archive_dir + '/columnLabels.csv', 'r') as fin:
+    with open(cfg.meta_dir + '/columnLabels.csv', 'r') as fin:
         header = list(csv.reader(fin))[0]
     print(f"  -- header = {header}\n")
     
