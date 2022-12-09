@@ -23,9 +23,11 @@ import os
 
 
 # [shared]
-archive_dir = os.getcwd() + '/../data/sub_archive'
-meta_dir = os.getcwd() + '/../data/meta_archive'
-pruned_dir = os.getcwd() + '/../data/pruned'
+data_dir = 'data'
+archive_dir = os.getcwd() + '/../' + data_dir + '/sub_archive'
+meta_dir = os.getcwd() + '/../' + data_dir + '/meta_archive'
+pruned_dir = os.getcwd() + '/../' + data_dir + '/pruned'
+inter_dir = os.getcwd() + '/../' + data_dir + '/intermediates'
 
 # data_pruning.py
 patients_dp = {
@@ -44,5 +46,12 @@ patients_dp = {
               }  # keys = patient, values = late-stage trial with all three conditions
 
 # feature_gen.py
-patients_fg = [1, 2, 67, 69]
+# patients_fg = [1, 2]  # 0:16:35, 55230 features, 1943 features with all zeros
+# patients_fg = [1, 2, 67, 69]  # 0:31:08, 55230 features, 1922 features with all zeros
+patients_fg = range(59, 74+1)  # half 0, half 1; 2:07:17, 55230 features, 1870 features with all zeros
+# patients_fg = range(1, 81+1)
 selected_condition = 1
+# fname_fgen = 'feature_gen_pat1-2_cond' + str(selected_condition) + '.csv'
+# fname_fgen = 'feature_gen_pat1-2-67-69_cond' + str(selected_condition) + '.csv'
+fname_fgen = 'feature_gen_cond' + str(selected_condition) + '_pat59to74.csv'
+# fname_fgen = 'feature_gen_cond' + str(selected_condition) + '_pat1to81.csv'

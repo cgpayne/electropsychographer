@@ -63,10 +63,11 @@ if __name__ == '__main__':
         print("\n    --- df_pat =")
         print(df_pat)
         
-        # output to file
+        # output to csv
         print("  -- saving to file")
         df_pat.to_csv(cfg.pruned_dir + '/' + str(pp) + '.csv', index=False, header=False)
         t_now = ut.time_stamp(t_now, t_zero, 'selection, check, save')  # TIME STAMP
-
-
-# F- I-- N---
+    
+    
+    # F- I-- N---
+    print('\n\nF- I-- N---')
