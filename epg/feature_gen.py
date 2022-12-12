@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 #  feature_gen.py = generate features from the time series using ts-fresh
 #  python3 feature_gen.py
-#  By: Charlie Payne
-#  Licence: n/a
+#  Copyright (c) 2022 Charlie Payne
+#  Licence: GNU GPLv3
 # DESCRIPTION
 #  [TBA]
 # NOTES

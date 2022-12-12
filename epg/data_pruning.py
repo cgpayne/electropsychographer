@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 #  data_pruning.py = do an initial pruning, pull out the right trial for selected data
 #  python3 data_pruning.py
-#  By: Charlie Payne
-#  Licence: n/a
+#  Copyright (c) 2022 Charlie Payne
+#  Licence: GNU GPLv3
 # DESCRIPTION
 #  the purpose of this script is to individually pull out a single trial (eg, 100)
 #    from each of patient data frames

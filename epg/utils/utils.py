@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 #  utils.py = holds utility functions for electropsychographer
 #  import utils.utils as ut
-#  By: Charlie Payne
-#  Licence: n/a
+#  Copyright (c) 2022 Charlie Payne
+#  Licence: GNU GPLv3
 # DESCRIPTION
 #  these utility functions are shared throughout the electropsychographer code
 # NOTES

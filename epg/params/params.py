@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 #  user_config.py = holds hard-coded parameters for the electropsychographer
 #  import params.params as p_epg
-#  By: Charlie Payne
-#  Licence: n/a
+#  Copyright (c) 2022 Charlie Payne
+#  Licence: GNU GPLv3
 # DESCRIPTION
 #  these parameters are hard coded, in contrast to config/user_config.py
 # NOTES
