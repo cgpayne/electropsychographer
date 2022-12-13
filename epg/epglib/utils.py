@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #  utils.py = holds utility functions for electropsychographer
-#  import utils.utils as ut
+#  import epglib.utils as ut
 #  Copyright (c) 2022 Charlie Payne
 #  Licence: GNU GPLv3
 # DESCRIPTION

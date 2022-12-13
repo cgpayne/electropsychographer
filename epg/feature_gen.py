@@ -24,9 +24,9 @@ from tsfresh import extract_features
 from tsfresh.utilities.dataframe_functions import impute
 
 # internal imports
-import params.params as p_epg
+import epglib.params as p_epg
 from config import user_config as cfg
-import utils.utils as ut
+import epglib.utils as ut
 
 
 # CLASS: PatientDF = a pandas data frame with properties for a patient sample

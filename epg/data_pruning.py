@@ -25,7 +25,7 @@ import pandas as pd
 
 # internal imports
 from config import user_config as cfg
-import utils.utils as ut
+import epglib.utils as ut
 
 
 if __name__ == '__main__':
