@@ -18,3 +18,5 @@
 
 
 sample_count = 3072  # number of samples, see data/archive/time.csv
+fcol_labels = 'columnLabels.csv'
+fdemographic = 'demographic.csv'

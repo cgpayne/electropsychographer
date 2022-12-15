@@ -4,7 +4,11 @@
 #  Copyright (c) 2022 Charlie Payne
 #  Licence: GNU GPLv3
 # DESCRIPTION
-#  [TBA]
+#  this code is the work horse of the electropsychographer
+#  it takes in the pruned data, concatenates it, then generates features of the
+#    time series using a package called ts-fresh
+#  there tends to be around 55,230 features generated, which are reduced via
+#    PCA in the following script (run_pca.py)
 # NOTES
 #  [none]
 # RESOURCES
@@ -63,7 +67,7 @@ if __name__ == '__main__':
         t_now = ut.time_stamp(t_now, t_zero, str(pp))  # TIME STAMP
     
     # grab the header, tidy up, and separate out the chosen condition
-    with open(cfg.meta_dir + '/columnLabels.csv', 'r') as fin:
+    with open(cfg.meta_dir + '/' + p_epg.fcol_labels, 'r') as fin:
         header = list(csv.reader(fin))[0]
     print(f"  -- header = {header}\n")
     

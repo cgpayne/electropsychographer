@@ -8,6 +8,7 @@
 #    from each of patient data frames
 #  this is to save memory, and will be done in batches
 #  it is very basic in that reformatting the data frames will be handled in feature_gen.py
+#  this is the first main script to be run
 # NOTES
 #  [none]
 # RESOURCES
