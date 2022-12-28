@@ -9,6 +9,7 @@
 #  this is to save memory, and will be done in batches
 #  it is very basic in that reformatting the data frames will be handled in feature_gen.py
 #  this is the first main script to be run
+#  data is taken in from cfg.archive_dir, processed, and saved to cfg.pruned_dir
 # NOTES
 #  [none]
 # RESOURCES
@@ -66,6 +67,7 @@ if __name__ == '__main__':
         
         # output to csv
         print("  -- saving to file")
+        ut.make_dir(cfg.pruned_dir)
         df_pat.to_csv(cfg.pruned_dir + '/' + str(pp) + '.csv', index=False, header=False)
         t_now = ut.time_stamp(t_now, t_zero, 'selection, check, save')  # TIME STAMP
     

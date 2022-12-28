@@ -9,6 +9,7 @@
 #    time series using a package called ts-fresh
 #  there tends to be around 55,230 features generated, which are reduced via
 #    PCA in the following script (run_pca.py)
+#  data is taken in from cfg.pruned_dir, processed, and saved to cfg.inter_dir
 # NOTES
 #  [none]
 # RESOURCES
@@ -128,6 +129,7 @@ if __name__ == '__main__':
     
     # output to csv
     print("- saving to file")
+    ut.make_dir(cfg.inter_dir)
     df_extracted.to_csv(cfg.inter_dir + '/' + cfg.fname_fgen, index=False)
     t_now = ut.time_stamp(t_now, t_zero, 'check/remove all zeros, save')  # TIME STAMP
 

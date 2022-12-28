@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 #  user_config.py = holds user configuration parameters for the electropsychographer
 #  from config import user_config as cfg
-#  By: Charlie Payne
-#  Licence: n/a
+#  Copyright (c) 2022 Charlie Payne
+#  Licence: GNU GPLv3
 # DESCRIPTION
 #  user_config.py is the main configuration file
 #  to set this up: copy example_config.py -> user_config.py
@@ -29,8 +29,10 @@ meta_dir = os.getcwd() + '/../' + data_dir + '/meta_archive'
 pruned_dir = os.getcwd() + '/../' + data_dir + '/pruned'
 inter_dir = os.getcwd() + '/../' + data_dir + '/intermediates'
 
+
 # data_pruning.py
 patients_dp = {
+               1: 90, 2: 90
                # 1: 90, 2: 90, 67: 90
                # 69: 90
                # 3: 90, 4: 90, 5: 90, 6: 90, 7: 90, 8: 90, 9: 90
@@ -42,16 +44,21 @@ patients_dp = {
                # 50: 90, 51: 90, 52: 90, 53: 90, 54: 90, 55: 90, 56: 90, 57: 90, 58: 90, 59: 90,
                # 60: 90, 61: 90, 62: 90, 63: 90, 64: 90, 65: 90,
                # 70: 90, 71: 90, 72: 90, 73: 90, 74: 90, 75: 90, 76: 90, 77: 90, 78: 90, 79: 90
-               51: 19, 61: 91, 77: 91  # 51 = outlier?
+               # 51: 19, 61: 91, 77: 91  # 51 = outlier?
               }  # keys = patient, values = late-stage trial with all three conditions
 
+
 # feature_gen.py
-# patients_fg = [1, 2]  # 0:16:35, 55230 features, 1943 features with all zeros
-# patients_fg = [1, 2, 67, 69]  # 0:31:08, 55230 features, 1922 features with all zeros
-patients_fg = range(59, 74+1)  # half 0, half 1; 2:07:17, 55230 features, 1870 features with all zeros
-# patients_fg = range(1, 81+1)
+
 selected_condition = 1
+
+patients_fg = [1, 2]  # 0:16:35, 55230 features, 1943 features with all zeros
+# patients_fg = [1, 2, 67, 69]  # 0:31:08, 55230 features, 1922 features with all zeros
+# patients_fg = range(59, 74+1)  # half 0, half 1; 2:07:17, 55230 features, 1870 features with all zeros
+# patients_fg = range(1, 81+1)
+
 # fname_fgen = 'feature_gen_pat1-2_cond' + str(selected_condition) + '.csv'
+fname_fgen = 'testing.csv'
 # fname_fgen = 'feature_gen_pat1-2-67-69_cond' + str(selected_condition) + '.csv'
-fname_fgen = 'feature_gen_cond' + str(selected_condition) + '_pat59to74.csv'
+# fname_fgen = 'feature_gen_cond' + str(selected_condition) + '_pat59to74.csv'
 # fname_fgen = 'feature_gen_cond' + str(selected_condition) + '_pat1to81.csv'

@@ -18,6 +18,7 @@
 
 import time
 import datetime
+import os
 
 
 # FUNCTION: time_stamp = create a time stamp within the code
@@ -35,3 +36,9 @@ def time_stamp(t_del, t_zero, stamp):
     print(time_front + " " + time_back)
     
     return t_now
+
+
+# FUNCTION: make_dir = make a directory recursively if it doesn't already exist
+def make_dir(path_to_dir):
+    if not os.path.isdir(path_to_dir):
+        os.makedirs(path_to_dir)
