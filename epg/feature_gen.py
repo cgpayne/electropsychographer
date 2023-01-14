@@ -8,7 +8,7 @@
 #  it takes in the pruned data, concatenates it, then generates features of the
 #    time series using a package called ts-fresh
 #  there tends to be around 55,230 features generated, which are reduced via
-#    PCA in the following script (run_pca.py)
+#    PCA in the following script (run_PCA.py)
 #  data is taken in from cfg.pruned_dir, processed, and saved to cfg.inter_dir
 # NOTES
 #  [none]
