@@ -18,28 +18,38 @@
 #  [none]
 
 # external imports
+import time
 # import numpy as np
 import pandas as pd
 
 import epglib.params as p_epg
 from config import user_config as cfg
-# import epglib.utils as ut
+import epglib.utils as ut
 # import epglib.classes as cls
 
 
 if __name__ == '__main__':
-    # create response variable
+    t_zero = time.time()  # start the clock
+    t_now = t_zero
+    
+    print(f"- processing: {cfg.fname_pca}\n")
+    
+    # load in the data
+    print("- loading in the data")
+    X = pd.read_csv(cfg.inter_dir + '/' + cfg.fname_pca)
+    print(X)
+    
+    # create response vector
+    print("\n- generating response vector")
     demo = pd.read_csv(cfg.meta_dir + '/' + p_epg.fdemographic)
-    print(demo)
-    
     all_subjects = {demo.loc[ii, 'subject']: demo.loc[ii, ' group'] for ii in range(len(demo))}
-    print(all_subjects)
+    print(f"  -- subjects (key) with respectives groups (value) = {all_subjects}")
     
-    # df.index.name = 'subject' (for feature_gen.py)
-    X = pd.DataFrame({'subject': [27,71,2,14,15,69,18,80], 'xyz': [88,89,90,91,92,9,93,94]})  # test
     y = pd.DataFrame({'subject': list(X['subject']),
                       'class': [all_subjects[X.loc[ii, 'subject']] for ii in range(len(X))]})
+    print("\n  -- y =")
     print(y)
+    t_now = ut.time_stamp(t_now, t_zero, 'load + response')  # TIME STAMP
     
     
     # F- I-- N---

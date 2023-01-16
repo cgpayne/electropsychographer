@@ -50,15 +50,22 @@ patients_dp = {
 
 # feature_gen.py
 
-selected_condition = 1
+selected_condition = 1  # experimental modes, see data/my_meta.txt
 
 patients_fg = [1, 2]  # 0:16:35, 55230 features, 1943 features with all zeros
 # patients_fg = [1, 2, 67, 69]  # 0:31:08, 55230 features, 1922 features with all zeros
 # patients_fg = range(59, 74+1)  # half 0, half 1; 2:07:17, 55230 features, 1870 features with all zeros
+# runtime regression is very linear: T = 7.4*N + 1.66 => T(81) = 601min = 10 hours
 # patients_fg = range(1, 81+1)
 
-# fname_fgen = 'feature_gen_pat1-2_cond' + str(selected_condition) + '.csv'
-fname_fgen = 'testing.csv'
-# fname_fgen = 'feature_gen_pat1-2-67-69_cond' + str(selected_condition) + '.csv'
+# fname_fgen = 'testing.csv'
+fname_fgen = 'feature_gen_cond' + str(selected_condition) + '_pat1-2.csv'
+# fname_fgen = 'feature_gen_cond' + str(selected_condition) + '_pat1-2-67-69.csv'
 # fname_fgen = 'feature_gen_cond' + str(selected_condition) + '_pat59to74.csv'
 # fname_fgen = 'feature_gen_cond' + str(selected_condition) + '_pat1to81.csv'
+
+
+# run_PCA.py
+
+# fname_pca = fname_fgen
+fname_pca = 'feature_gen_cond1_pat59to74.csv'
