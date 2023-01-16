@@ -69,3 +69,4 @@ fname_fgen = 'feature_gen_cond' + str(selected_condition) + '_pat1-2.csv'
 
 # fname_pca = fname_fgen
 fname_pca = 'feature_gen_cond1_pat59to74.csv'
+test_size = 0.2  # ratio of test data to full dataset
