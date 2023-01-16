@@ -31,7 +31,7 @@ class PatientDF():
         self.df['condition'] = self.df['condition'].astype('int')
         self.df['sample'] = self.df['sample'].astype('int')
     
-    # METHOD: set_condition = pull out a specific condition from the df
+    # METHOD: set_condition = pull out a specific condition (experimental mode) from the df
     #     IN: selected_condition = the condition number to pull out, set in user_config.py
     def set_condition(self, selected_condition):
         self.df = self.df[self.df['condition'] == selected_condition]

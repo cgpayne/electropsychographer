@@ -38,7 +38,7 @@ if __name__ == '__main__':
     # df.index.name = 'subject' (for feature_gen.py)
     X = pd.DataFrame({'subject': [27,71,2,14,15,69,18,80], 'xyz': [88,89,90,91,92,9,93,94]})  # test
     y = pd.DataFrame({'subject': list(X['subject']),
-                      'response': [all_subjects[X.loc[ii, 'subject']] for ii in range(len(X))]})
+                      'class': [all_subjects[X.loc[ii, 'subject']] for ii in range(len(X))]})
     print(y)
     
     

@@ -130,7 +130,8 @@ if __name__ == '__main__':
     # output to csv
     print("- saving to file")
     ut.make_dir(cfg.inter_dir)
-    df_extracted.to_csv(cfg.inter_dir + '/' + cfg.fname_fgen, index=False)
+    df_extracted.index.name = 'subject'
+    df_extracted.to_csv(cfg.inter_dir + '/' + cfg.fname_fgen)
     t_now = ut.time_stamp(t_now, t_zero, 'check/remove all zeros, save')  # TIME STAMP
 
 
