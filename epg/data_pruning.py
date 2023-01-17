@@ -9,7 +9,7 @@
 #  this is to save memory, and will be done in batches
 #  it is very basic in that reformatting the data frames will be handled in feature_gen.py
 #  this is the first main script to be run
-#  data is taken in from cfg.archive_dir, processed, and saved to cfg.pruned_dir
+#  data is taken in from p_epg.archive_dir, processed, and saved to p_epg.pruned_dir
 # NOTES
 #  [none]
 # RESOURCES
@@ -26,6 +26,7 @@ import time
 import pandas as pd
 
 # internal imports
+import epglib.params as p_epg
 from config import user_config as cfg
 import epglib.utils as ut
 
@@ -40,7 +41,7 @@ if __name__ == '__main__':
         # load in the data
         print(f"- operating on patient {pp}")
         print("  -- loading in the data...")
-        df_pat = pd.read_csv(cfg.archive_dir + '/' + str(pp) + '.csv/' + str(pp) + '.csv', header=None)
+        df_pat = pd.read_csv(p_epg.archive_dir + '/' + str(pp) + '.csv/' + str(pp) + '.csv', header=None)
         print("     ...done.")
         t_now = ut.time_stamp(t_now, t_zero, 'data load in')  # TIME STAMP
         # exit()
@@ -67,8 +68,8 @@ if __name__ == '__main__':
         
         # output to csv
         print("  -- saving to file")
-        ut.make_dir(cfg.pruned_dir)
-        df_pat.to_csv(cfg.pruned_dir + '/' + str(pp) + '.csv', index=False, header=False)
+        ut.make_dir(p_epg.pruned_dir)
+        df_pat.to_csv(p_epg.pruned_dir + '/' + str(pp) + '.csv', index=False, header=False)
         t_now = ut.time_stamp(t_now, t_zero, 'selection, check, save')  # TIME STAMP
     
     

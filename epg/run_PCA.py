@@ -44,14 +44,14 @@ if __name__ == '__main__':
     
     # load in the data
     print("- loading in the data")
-    X = pd.read_csv(cfg.inter_dir + '/' + cfg.fname_pca, index_col='subject')
+    X = pd.read_csv(p_epg.inter_dir + '/' + cfg.fname_pca, index_col='subject')
     # X.index = X['subject']
     # X = X.drop(columns=['subject'])
     print(X)
     
     # create response vector
     print("\n- generating response vector")
-    demo = pd.read_csv(cfg.meta_dir + '/' + p_epg.fdemographic)
+    demo = pd.read_csv(p_epg.meta_dir + '/' + p_epg.fdemographic)
     all_subjects = {demo.loc[ii, 'subject']: demo.loc[ii, ' group'] for ii in range(len(demo))}
     print(f"  -- subjects (key) with respectives groups (value) = {all_subjects}")
     
@@ -110,6 +110,9 @@ if __name__ == '__main__':
     print(f"  -- number of components = {num_components}")
     
     print("  -- plotting...")
+    fig_dir_now = p_epg.fig_dir + '/' + cfg.data_handle
+    ut.make_dir(fig_dir_now)
+    
     print("    --- ...explained variance...")
     fig_ev = plt.figure(1)
     plt.bar(range(1, num_components+1), explained_variance)
@@ -117,6 +120,7 @@ if __name__ == '__main__':
     plt.xlabel('component')
     plt.ylabel('percent explained')
     plt.xticks([ii for ii in range(1, num_components+1)])
+    plt.savefig(fig_dir_now + '/explained_variance.pdf')
     plt.show()
     
     # plot the cummulative explained variance
@@ -134,6 +138,7 @@ if __name__ == '__main__':
     plt.xlabel('component')
     plt.ylabel('percent explained')
     plt.xticks([ii for ii in range(1, num_components+1)])
+    plt.savefig(fig_dir_now + '/cummulative_explained_variance.pdf')
     plt.show()
     
     # split out training data into control (HC) and schizophrenia (SZ)
@@ -152,18 +157,23 @@ if __name__ == '__main__':
     plt.scatter(X_HC[:, 0], X_HC[:, 1], label='HC')
     plt.scatter(X_SZ[:, 0], X_SZ[:, 1], label='SZ')
     plt.legend()
+    plt.title('PC1 vs PC2')
     plt.xlabel(f"PC1 = {100*explained_variance[0]:.2f}%")
     plt.ylabel(f"PC2 = {100*explained_variance[1]:.2f}%")
+    plt.savefig(fig_dir_now + '/PC1_vs_PC2.pdf')
     plt.show()
     
     print("    --- ...PC2 vs PC3...")
     fig23 = plt.figure(4)
     plt.scatter(X_HC[:, 1], X_HC[:, 2], label='HC')
     plt.scatter(X_SZ[:, 1], X_SZ[:, 2], label='SZ')
+    plt.title('PC2 vs PC3')
     plt.xlabel(f"PC2 = {100*explained_variance[1]:.2f}%")
     plt.ylabel(f"PC3 = {100*explained_variance[2]:.2f}%")
     plt.legend()
+    plt.savefig(fig_dir_now + '/PC2_vs_PC3.pdf')
     plt.show()
+    
     print("     ...done.")
     t_now = ut.time_stamp(t_now, t_zero, 'plotting')  # TIME STAMP
     

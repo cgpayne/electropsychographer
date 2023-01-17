@@ -9,7 +9,7 @@
 #    time series using a package called ts-fresh
 #  there tends to be around 55,230 features generated, which are reduced via
 #    PCA in the following script (run_PCA.py)
-#  data is taken in from cfg.pruned_dir, processed, and saved to cfg.inter_dir
+#  data is taken in from p_epg.pruned_dir, processed, and saved to p_epg.inter_dir
 # NOTES
 #  [none]
 # RESOURCES
@@ -63,12 +63,12 @@ if __name__ == '__main__':
     pat_dat = {}  # a dictionary of PatientDF's per patient
     for pp in cfg.patients_fg:
         print(f"  -- loading in for patient {pp}...")
-        pat_dat[pp] = cls.PatientDF(pd.read_csv(cfg.pruned_dir + '/' + str(pp) + '.csv', header=None))
+        pat_dat[pp] = cls.PatientDF(pd.read_csv(p_epg.pruned_dir + '/' + str(pp) + '.csv', header=None))
         print("     ...done.")
         t_now = ut.time_stamp(t_now, t_zero, str(pp))  # TIME STAMP
     
     # grab the header, tidy up, and separate out the chosen condition
-    with open(cfg.meta_dir + '/' + p_epg.fcol_labels, 'r') as fin:
+    with open(p_epg.meta_dir + '/' + p_epg.fcol_labels, 'r') as fin:
         header = list(csv.reader(fin))[0]
     print(f"  -- header = {header}\n")
     
@@ -129,9 +129,9 @@ if __name__ == '__main__':
     
     # output to csv
     print("- saving to file")
-    ut.make_dir(cfg.inter_dir)
+    ut.make_dir(p_epg.inter_dir)
     df_extracted.index.name = 'subject'
-    df_extracted.to_csv(cfg.inter_dir + '/' + cfg.fname_fgen)
+    df_extracted.to_csv(p_epg.inter_dir + '/' + cfg.fname_fgen)
     t_now = ut.time_stamp(t_now, t_zero, 'check/remove all zeros, save')  # TIME STAMP
 
 

@@ -19,15 +19,8 @@
 # DESIRED FEATURES
 #  [none]
 
-import os
-
-
-# [shared]
-data_dir = 'data'
-archive_dir = os.getcwd() + '/../' + data_dir + '/sub_archive'
-meta_dir = os.getcwd() + '/../' + data_dir + '/meta_archive'
-pruned_dir = os.getcwd() + '/../' + data_dir + '/pruned'
-inter_dir = os.getcwd() + '/../' + data_dir + '/intermediates'
+# internal imports
+import epglib.params as p_epg
 
 
 # data_pruning.py
@@ -67,6 +60,6 @@ fname_fgen = 'feature_gen_cond' + str(selected_condition) + '_pat1-2.csv'
 
 # run_PCA.py
 
-# fname_pca = fname_fgen
-fname_pca = 'feature_gen_cond1_pat59to74.csv'
+data_handle = 'cond1_pat59to74'
+fname_pca = 'feature_gen_' + data_handle + '.csv'
 test_size = 0.2  # ratio of test data to full dataset
