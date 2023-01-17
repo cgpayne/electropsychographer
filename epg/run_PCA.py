@@ -21,10 +21,12 @@
 # external imports
 import time
 import math
-# import numpy as np
+import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
 
 # internal imports
 import epglib.params as p_epg
@@ -88,6 +90,81 @@ if __name__ == '__main__':
     print("\n  -- X_test =")
     print(X_test)
     t_now = ut.time_stamp(t_now, t_zero, 'scaled data')  # TIME STAMP
+    
+    ## perform the PCA
+    print("\n- perform the PCA")
+    pca = PCA()
+    X_train = pca.fit_transform(X_train)
+    X_test = pca.transform(X_test)
+    
+    print("\n  -- X_train =")
+    print(X_train)
+    print("\n  -- X_test =")
+    print(X_test)
+    t_now = ut.time_stamp(t_now, t_zero, 'PCA')  # TIME STAMP
+    
+    # plot the explained variance
+    explained_variance = pca.explained_variance_ratio_
+    num_components = len(explained_variance)
+    print(f"  -- explained_variance = {explained_variance}")
+    print(f"  -- number of components = {num_components}")
+    
+    print("  -- plotting...")
+    print("    --- ...explained variance...")
+    fig_ev = plt.figure(1)
+    plt.bar(range(1, num_components+1), explained_variance)
+    plt.title('explained variance')
+    plt.xlabel('component')
+    plt.ylabel('percent explained')
+    plt.xticks([ii for ii in range(1, num_components+1)])
+    plt.show()
+    
+    # plot the cummulative explained variance
+    sum_cev = 0
+    cummulative_ev = []
+    for ii in range(num_components):
+        sum_cev += explained_variance[ii]
+        cummulative_ev.append(sum_cev)
+    print(cummulative_ev)
+    
+    print("    --- ...cummulative explained variance...")
+    fig_cev = plt.figure(2)
+    plt.bar(range(1, num_components+1), cummulative_ev)
+    plt.title('cummulative explained variance')
+    plt.xlabel('component')
+    plt.ylabel('percent explained')
+    plt.xticks([ii for ii in range(1, num_components+1)])
+    plt.show()
+    
+    # split out training data into control (HC) and schizophrenia (SZ)
+    X_HC = np.empty((0, X_train.shape[1]))
+    X_SZ = np.empty((0, X_train.shape[1]))
+
+    for ii in range(len(y_train)):
+        if y_train.iloc[ii] == 0:
+            X_HC = np.append(X_HC, [X_train[ii, :]], axis=0)
+        elif y_train.iloc[ii] == 1:
+            X_SZ = np.append(X_SZ, [X_train[ii, :]], axis=0)
+    
+    # plot PC1 vs PC2 then PC2 vs PC3
+    print("    --- ...PC1 vs PC2...")
+    fig12 = plt.figure(3)
+    plt.scatter(X_HC[:, 0], X_HC[:, 1], label='HC')
+    plt.scatter(X_SZ[:, 0], X_SZ[:, 1], label='SZ')
+    plt.legend()
+    plt.xlabel(f"PC1 = {100*explained_variance[0]:.2f}%")
+    plt.ylabel(f"PC2 = {100*explained_variance[1]:.2f}%")
+    plt.show()
+    
+    print("    --- ...PC2 vs PC3...")
+    fig23 = plt.figure(4)
+    plt.scatter(X_HC[:, 1], X_HC[:, 2], label='HC')
+    plt.scatter(X_SZ[:, 1], X_SZ[:, 2], label='SZ')
+    plt.xlabel(f"PC2 = {100*explained_variance[1]:.2f}%")
+    plt.ylabel(f"PC3 = {100*explained_variance[2]:.2f}%")
+    plt.legend()
+    plt.show()
+    print("     ...done.")
     
     
     # F- I-- N---
