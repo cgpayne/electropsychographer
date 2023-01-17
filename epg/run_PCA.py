@@ -57,8 +57,6 @@ if __name__ == '__main__':
     
     y = pd.Series([all_subjects[X.index[ii]] for ii in range(len(X))], name='class')
     y.index = X.index
-    # y = pd.DataFrame({'subject': list(X['subject']),
-    #                   'class': [all_subjects[X.loc[ii, 'subject']] for ii in range(len(X))]})
     print("\n  -- y =")
     print(y)
     t_now = ut.time_stamp(t_now, t_zero, 'load + response')  # TIME STAMP
@@ -66,7 +64,7 @@ if __name__ == '__main__':
     # split the data: training, testing
     print("- split the dataset into training data and test data")
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=cfg.test_size, random_state=0)
-    # _train, X_test, y_train, y_test = train_test_split(X, y, test_size=cfg.test_size, random_state=math.floor(t_now))
+    # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=cfg.test_size, random_state=math.floor(t_now))
     
     print("\n  -- X_train =")
     print(X_train)
@@ -121,7 +119,8 @@ if __name__ == '__main__':
     plt.ylabel('percent explained')
     plt.xticks([ii for ii in range(1, num_components+1)])
     plt.savefig(fig_dir_now + '/explained_variance.pdf')
-    plt.show()
+    if cfg.pca_show_fig == 'on':
+        plt.show()
     
     # plot the cummulative explained variance
     sum_cev = 0
@@ -139,7 +138,8 @@ if __name__ == '__main__':
     plt.ylabel('percent explained')
     plt.xticks([ii for ii in range(1, num_components+1)])
     plt.savefig(fig_dir_now + '/cummulative_explained_variance.pdf')
-    plt.show()
+    if cfg.pca_show_fig == 'on':
+        plt.show()
     
     # split out training data into control (HC) and schizophrenia (SZ)
     X_HC = np.empty((0, X_train.shape[1]))
@@ -161,7 +161,8 @@ if __name__ == '__main__':
     plt.xlabel(f"PC1 = {100*explained_variance[0]:.2f}%")
     plt.ylabel(f"PC2 = {100*explained_variance[1]:.2f}%")
     plt.savefig(fig_dir_now + '/PC1_vs_PC2.pdf')
-    plt.show()
+    if cfg.pca_show_fig == 'on':
+        plt.show()
     
     print("    --- ...PC2 vs PC3...")
     fig23 = plt.figure(4)
@@ -172,7 +173,8 @@ if __name__ == '__main__':
     plt.ylabel(f"PC3 = {100*explained_variance[2]:.2f}%")
     plt.legend()
     plt.savefig(fig_dir_now + '/PC2_vs_PC3.pdf')
-    plt.show()
+    if cfg.pca_show_fig == 'on':
+        plt.show()
     
     print("     ...done.")
     t_now = ut.time_stamp(t_now, t_zero, 'plotting')  # TIME STAMP
