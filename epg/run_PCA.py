@@ -165,6 +165,7 @@ if __name__ == '__main__':
     plt.legend()
     plt.show()
     print("     ...done.")
+    t_now = ut.time_stamp(t_now, t_zero, 'plotting')  # TIME STAMP
     
     
     # F- I-- N---
