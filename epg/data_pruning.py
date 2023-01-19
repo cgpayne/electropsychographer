@@ -1,25 +1,27 @@
 #!/usr/bin/env python
-#  data_pruning.py = do an initial pruning, pull out the right trial for selected data
-#  python3 data_pruning.py
-#  Copyright (c) 2022 Charlie Payne
-#  Licence: GNU GPLv3
-# DESCRIPTION
-#  the purpose of this script is to individually pull out a single trial (eg, 100)
-#    from each of patient data frames
-#  this is to save memory, and will be done in batches
-#  it is very basic in that reformatting the data frames will be handled in feature_gen.py
-#  this is the first main script to be run
-#  data is taken in from p_epg.archive_dir, processed, and saved to p_epg.pruned_dir
-# NOTES
-#  [none]
-# RESOURCES
-#  [none]
-# CONVENTIONS
-#  [none]
-# KNOWN BUGS
-#  [none]
-# DESIRED FEATURES
-#  [none]
+'''
+data_pruning.py = do an initial pruning, pull out the right trial for selected data
+  python3 data_pruning.py
+  Copyright (c) 2022 Charlie Payne
+  Licence: GNU GPLv3
+DESCRIPTION
+  the purpose of this script is to individually pull out a single trial (eg, 100)
+    from each of patient data frames
+  this is to save memory, and will be done in batches
+  it is very basic in that reformatting the data frames will be handled in feature_gen.py
+  this is the first main script to be run
+  data is taken in from p_epg.archive_dir, processed, and saved to p_epg.pruned_dir
+NOTES
+  [none]
+RESOURCES
+  [none]
+CONVENTIONS
+  [none]
+KNOWN BUGS
+  [none]
+DESIRED FEATURES
+  [none]
+'''
 
 # external imports
 import time

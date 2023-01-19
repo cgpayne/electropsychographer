@@ -1,25 +1,27 @@
 #!/usr/bin/env python
-#  feature_gen.py = generate features from the time series using ts-fresh
-#  python3 feature_gen.py
-#  Copyright (c) 2022 Charlie Payne
-#  Licence: GNU GPLv3
-# DESCRIPTION
-#  this code is the work horse of the electropsychographer
-#  it takes in the pruned data, concatenates it, then generates features of the
-#    time series using a package called ts-fresh
-#  there tends to be around 55,230 features generated, which are reduced via
-#    PCA in the following script (run_PCA.py)
-#  data is taken in from p_epg.pruned_dir, processed, and saved to p_epg.inter_dir
-# NOTES
-#  [none]
-# RESOURCES
-#  -- https://tsfresh.readthedocs.io/en/latest/text/quick_start.html
-# CONVENTIONS
-#  [none]
-# KNOWN BUGS
-#  [none]
-# DESIRED FEATURES
-#  [none]
+'''
+feature_gen.py = generate features from the time series using ts-fresh
+  python3 feature_gen.py
+  Copyright (c) 2022 Charlie Payne
+  Licence: GNU GPLv3
+DESCRIPTION
+  this code is the work horse of the electropsychographer
+  it takes in the pruned data, concatenates it, then generates features of the
+    time series using a package called ts-fresh
+  there tends to be around 55,230 features generated, which are reduced via
+    PCA in the following script (run_PCA.py)
+  data is taken in from p_epg.pruned_dir, processed, and saved to p_epg.inter_dir
+NOTES
+  [none]
+RESOURCES
+  -- https://tsfresh.readthedocs.io/en/latest/text/quick_start.html
+CONVENTIONS
+  [none]
+KNOWN BUGS
+  [none]
+DESIRED FEATURES
+  [none]
+'''
 
 # external imports
 import time
@@ -35,8 +37,10 @@ import epglib.utils as ut
 import epglib.classes as cls
 
 
-# FUNCTION: print_first_three = print the first three patient data frames
 def print_first_three(pat_dat):
+    '''
+    FUNCTION: print_first_three = print the first three patient data frames
+    '''
     print("\n- printing first three data frames")
     for pp in list(pat_dat.keys())[:3]:
         print(f"~~~~ patient {pp}, df =")
@@ -44,9 +48,11 @@ def print_first_three(pat_dat):
 
 
 # OBSOLETE: now using only one trial via data_pruning.py
-# # FUNCTION: tss = put the time series in series wrt trial
-# #   IN/OUT: row = a row of the patient data frame
 # def tss(row):
+#     '''
+#     FUNCTION: tss = put the time series in series wrt trial
+#       IN/OUT: row = a row of the patient data frame
+#     '''
 #     row['sample'] += (row['trial']-1)*p_epg.sample_count
 #     return row
 
