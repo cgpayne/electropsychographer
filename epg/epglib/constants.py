@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 '''
-params.py = holds hard-coded parameters for the electropsychographer
-  import epglib.params as p_epg
+constants.py = holds hard-coded constants for the electropsychographer
+  import epglib.constants as c_epg
   Copyright (c) 2022 Charlie Payne
   Licence: GNU GPLv3
 DESCRIPTION
-  these parameters are hard coded, in contrast to config/user_config.py
+  these constants are hard coded, in contrast to config/user_config.py
 NOTES
   [none]
 RESOURCES

@@ -1,26 +1,28 @@
 #!/usr/bin/env python
-#  user_config.py = holds user configuration parameters for the electropsychographer
-#  from config import user_config as cfg
-#  Copyright (c) 2022 Charlie Payne
-#  Licence: GNU GPLv3
-# DESCRIPTION
-#  user_config.py is the main configuration file
-#  to set this up: copy example_config.py -> user_config.py
-#  example_config.py will be tracked by git, but will *not* be imported
-#  user_config.py will *not* be tracked by git, but will be imported
-# NOTES
-#  [none]
-# RESOURCES
-#  [none]
-# CONVENTIONS
-#  -- all directory strings will not include a trailing slash
-# KNOWN BUGS
-#  [none]
-# DESIRED FEATURES
-#  [none]
+'''
+user_config.py = holds user configuration parameters for the electropsychographer
+  from config import user_config as cfg
+  Copyright (c) 2022 Charlie Payne
+  Licence: GNU GPLv3
+DESCRIPTION
+  user_config.py is the main configuration file
+  to set this up: copy example_config.py -> user_config.py
+  example_config.py will be tracked by git, but will *not* be imported
+  user_config.py will *not* be tracked by git, but will be imported
+NOTES
+  [none]
+RESOURCES
+  [none]
+CONVENTIONS
+  -- all directory strings will not include a trailing slash
+KNOWN BUGS
+  [none]
+DESIRED FEATURES
+  [none]
+'''
 
 # internal imports
-import epglib.params as p_epg
+import epglib.constants as c_epg
 
 
 # data_pruning.py
@@ -63,3 +65,4 @@ fname_fgen = 'feature_gen_cond' + str(selected_condition) + '_pat1-2.csv'
 data_handle = 'cond1_pat59to74'
 fname_pca = 'feature_gen_' + data_handle + '.csv'
 test_size = 0.2  # ratio of test data to full dataset
+pca_show_fig = 'off'  # 'on' = run plt.show()

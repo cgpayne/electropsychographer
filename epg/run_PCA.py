@@ -31,7 +31,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 
 # internal imports
-import epglib.params as p_epg
+import epglib.constants as c_epg
 from config import user_config as cfg
 import epglib.utils as ut
 # import epglib.classes as cls
@@ -46,14 +46,14 @@ if __name__ == '__main__':
     
     # load in the data
     print("- loading in the data")
-    X = pd.read_csv(p_epg.inter_dir + '/' + cfg.fname_pca, index_col='subject')
+    X = pd.read_csv(c_epg.inter_dir + '/' + cfg.fname_pca, index_col='subject')
     # X.index = X['subject']
     # X = X.drop(columns=['subject'])
     print(X)
     
     # create response vector
     print("\n- generating response vector")
-    demo = pd.read_csv(p_epg.meta_dir + '/' + p_epg.fdemographic)
+    demo = pd.read_csv(c_epg.meta_dir + '/' + c_epg.fdemographic)
     all_subjects = {demo.loc[ii, 'subject']: demo.loc[ii, ' group'] for ii in range(len(demo))}
     print(f"  -- subjects (key) with respectives groups (value) = {all_subjects}")
     
@@ -110,7 +110,7 @@ if __name__ == '__main__':
     print(f"  -- number of components = {num_components}")
     
     print("  -- plotting...")
-    fig_dir_now = p_epg.fig_dir + '/' + cfg.data_handle
+    fig_dir_now = c_epg.fig_dir + '/' + cfg.data_handle
     ut.make_dir(fig_dir_now)
     
     print("    --- ...explained variance...")

@@ -10,7 +10,7 @@ DESCRIPTION
     time series using a package called ts-fresh
   there tends to be around 55,230 features generated, which are reduced via
     PCA in the following script (run_PCA.py)
-  data is taken in from p_epg.pruned_dir, processed, and saved to p_epg.inter_dir
+  data is taken in from c_epg.pruned_dir, processed, and saved to c_epg.inter_dir
 NOTES
   [none]
 RESOURCES
@@ -31,7 +31,7 @@ from tsfresh import extract_features
 from tsfresh.utilities.dataframe_functions import impute
 
 # internal imports
-import epglib.params as p_epg
+import epglib.constants as c_epg
 from config import user_config as cfg
 import epglib.utils as ut
 import epglib.classes as cls
@@ -53,7 +53,7 @@ def print_first_three(pat_dat):
 #     FUNCTION: tss = put the time series in series wrt trial
 #       IN/OUT: row = a row of the patient data frame
 #     '''
-#     row['sample'] += (row['trial']-1)*p_epg.sample_count
+#     row['sample'] += (row['trial']-1)*c_epg.sample_count
 #     return row
 
 
@@ -69,12 +69,12 @@ if __name__ == '__main__':
     pat_dat = {}  # a dictionary of PatientDF's per patient
     for pp in cfg.patients_fg:
         print(f"  -- loading in for patient {pp}...")
-        pat_dat[pp] = cls.PatientDF(pd.read_csv(p_epg.pruned_dir + '/' + str(pp) + '.csv', header=None))
+        pat_dat[pp] = cls.PatientDF(pd.read_csv(c_epg.pruned_dir + '/' + str(pp) + '.csv', header=None))
         print("     ...done.")
         t_now = ut.time_stamp(t_now, t_zero, str(pp))  # TIME STAMP
     
     # grab the header, tidy up, and separate out the chosen condition
-    with open(p_epg.meta_dir + '/' + p_epg.fcol_labels, 'r') as fin:
+    with open(c_epg.meta_dir + '/' + c_epg.fcol_labels, 'r') as fin:
         header = list(csv.reader(fin))[0]
     print(f"  -- header = {header}\n")
     
@@ -135,9 +135,9 @@ if __name__ == '__main__':
     
     # output to csv
     print("- saving to file")
-    ut.make_dir(p_epg.inter_dir)
+    ut.make_dir(c_epg.inter_dir)
     df_extracted.index.name = 'subject'
-    df_extracted.to_csv(p_epg.inter_dir + '/' + cfg.fname_fgen)
+    df_extracted.to_csv(c_epg.inter_dir + '/' + cfg.fname_fgen)
     t_now = ut.time_stamp(t_now, t_zero, 'check/remove all zeros, save')  # TIME STAMP
 
 
