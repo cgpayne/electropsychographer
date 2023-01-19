@@ -5,7 +5,9 @@ run_PCA.py = run the Principal Component Analysis (PCA)
   Copyright (c) 2022 Charlie Payne
   Licence: GNU GPLv3
 DESCRIPTION
-  [insert: here]
+  this takes in the output from feature_gen.py and runs a PCA on it
+  thus reducing the 55k generated features from before to on the order of 10
+  data is taken in from c_epg.inter_dir and saved to c_epg.inter_dir
 NOTES
   [none]
 RESOURCES
@@ -22,7 +24,7 @@ DESIRED FEATURES
 
 # external imports
 import time
-import math
+# import math
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
