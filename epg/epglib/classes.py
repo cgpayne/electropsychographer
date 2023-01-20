@@ -19,7 +19,18 @@ DESIRED FEATURES
 '''
 
 # external imports
+# import math
+import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
+
+# internal imports
+# import epglib.constants as c_epg
+from config import user_config as cfg
+# import epglib.utils as ut
 
 
 class PatientDF():
@@ -59,3 +70,121 @@ class PatientDF():
     #     # sort by sample
     #     self.df = self.df.sort_values(by=['sample'])
     #     self.df.reset_index(inplace=True, drop=True)
+
+
+class DataEPG():
+    '''
+    Methods are listed in order of operation
+    '''
+    # CONSTRUCTOR
+    def __init__(self, X: pd.DataFrame, y: pd.Series) -> None:
+        # split the data: training, testing
+        print("- split the dataset into training data and test data")
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=cfg.test_size, random_state=0)
+        # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=cfg.test_size, random_state=math.floor(t_now))
+        
+        self.X_train = X_train
+        self.X_test = X_test
+        self.y_train = y_train
+        self.y_test = y_test
+    
+    def print_Xy(self) -> None:
+        print("\n  -- X_train =")
+        print(self.X_train)
+        print("\n  -- y_train =")
+        print(self.y_train)
+        print('\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+        print("\n  -- X_test =")
+        print(self.X_test)
+        print("\n  -- y_test =")
+        print(self.y_test)
+    
+    def print_X(self) -> None:
+        print("\n  -- X_train =")
+        print(self.X_train)
+        print("\n  -- X_test =")
+        print(self.X_test)
+    
+    def scale_X(self) -> None:
+        print('- scale the data via Z-score')
+        sc = StandardScaler()  # scale via Z-score
+        self.X_train = sc.fit_transform(self.X_train)  # fit and transform the X_train data via Z-score
+        self.X_test = sc.transform(self.X_test)        # transform the X_test data using the mean and standard deviation fit from X_train
+        
+    def exec_PCA(self) -> None:
+        print("\n- perform the PCA")
+        self.pca = PCA()
+        self.X_train = self.pca.fit_transform(self.X_train)
+        self.X_test = self.pca.transform(self.X_test)
+    
+    def set_ev(self) -> None:
+        self.explained_variance = self.pca.explained_variance_ratio_
+        self.num_components = len(self.explained_variance)
+        print(f"  -- explained_variance = {self.explained_variance}")
+        print(f"  -- number of components = {self.num_components}")
+        
+        sum_cev = 0
+        self.cummulative_ev = []
+        for ii in range(self.num_components):
+            sum_cev += self.explained_variance[ii]
+            self.cummulative_ev.append(sum_cev)
+        print(f"  -- cummulative_ev = {self.cummulative_ev}")
+    
+    def plot_ev(self, fig_dir_now: str) -> None:
+        print("    --- ...explained variance...")
+        plt.figure()
+        plt.bar(range(1, self.num_components+1), self.explained_variance)
+        plt.title('explained variance')
+        plt.xlabel('component')
+        plt.ylabel('percent explained')
+        plt.xticks([ii for ii in range(1, self.num_components+1)])
+        plt.savefig(fig_dir_now + '/explained_variance.pdf')
+        if cfg.pca_show_fig == 'on':
+            plt.show()
+    
+    def plot_cev(self, fig_dir_now: str) -> None:
+        print("    --- ...cummulative explained variance...")
+        plt.figure()
+        plt.bar(range(1, self.num_components+1), self.cummulative_ev)
+        plt.title('cummulative explained variance')
+        plt.xlabel('component')
+        plt.ylabel('percent explained')
+        plt.xticks([ii for ii in range(1, self.num_components+1)])
+        plt.savefig(fig_dir_now + '/cummulative_explained_variance.pdf')
+        if cfg.pca_show_fig == 'on':
+            plt.show()
+    
+    def set_HCSZ(self) -> None:
+        self.X_HC = np.empty((0, self.X_train.shape[1]))
+        self.X_SZ = np.empty((0, self.X_train.shape[1]))
+
+        for ii in range(len(self.y_train)):
+            if self.y_train.iloc[ii] == 0:
+                self.X_HC = np.append(self.X_HC, [self.X_train[ii, :]], axis=0)
+            elif self.y_train.iloc[ii] == 1:
+                self.X_SZ = np.append(self.X_SZ, [self.X_train[ii, :]], axis=0)
+    
+    def plot_PC(self, fig_dir_now: str) -> None:
+        print("    --- ...PC1 vs PC2...")
+        plt.figure()
+        plt.scatter(self.X_HC[:, 0], self.X_HC[:, 1], label='HC')
+        plt.scatter(self.X_SZ[:, 0], self.X_SZ[:, 1], label='SZ')
+        plt.legend()
+        plt.title('PC1 vs PC2')
+        plt.xlabel(f"PC1 = {100*self.explained_variance[0]:.2f}%")
+        plt.ylabel(f"PC2 = {100*self.explained_variance[1]:.2f}%")
+        plt.savefig(fig_dir_now + '/PC1_vs_PC2.pdf')
+        if cfg.pca_show_fig == 'on':
+            plt.show()
+        
+        print("    --- ...PC2 vs PC3...")
+        plt.figure()
+        plt.scatter(self.X_HC[:, 1], self.X_HC[:, 2], label='HC')
+        plt.scatter(self.X_SZ[:, 1], self.X_SZ[:, 2], label='SZ')
+        plt.title('PC2 vs PC3')
+        plt.xlabel(f"PC2 = {100*self.explained_variance[1]:.2f}%")
+        plt.ylabel(f"PC3 = {100*self.explained_variance[2]:.2f}%")
+        plt.legend()
+        plt.savefig(fig_dir_now + '/PC2_vs_PC3.pdf')
+        if cfg.pca_show_fig == 'on':
+            plt.show()
