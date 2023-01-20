@@ -37,7 +37,7 @@ import epglib.utils as ut
 import epglib.classes as cls
 
 
-def print_first_three(pat_dat):
+def print_first_three(pat_dat: cls.PatientDF) -> None:
     '''
     FUNCTION: print_first_three = print the first three patient data frames
     '''

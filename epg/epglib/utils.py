@@ -23,7 +23,7 @@ import datetime
 import os
 
 
-def time_stamp(t_del, t_zero, stamp):
+def time_stamp(t_del: float, t_zero: float, stamp: str) -> None:
     '''
     FUNCTION: time_stamp = create a time stamp within the code
           IN: t_del = the time of the last time point
@@ -42,7 +42,7 @@ def time_stamp(t_del, t_zero, stamp):
     return t_now
 
 
-def make_dir(path_to_dir):
+def make_dir(path_to_dir: str) -> None:
     '''
     FUNCTION: make_dir = make a directory (recursively) if it doesn't already exist
     '''
