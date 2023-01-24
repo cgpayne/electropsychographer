@@ -5,8 +5,9 @@ run_PCA.py = run the Principal Component Analysis (PCA)
   Copyright (c) 2022 Charlie Payne
   Licence: GNU GPLv3
 DESCRIPTION
-  this takes in the output from feature_gen.py and runs a PCA on it
-  thus reducing the 55k generated features from before to on the order of 10
+  this takes in the output from feature_gen.py and splits it into training and test data
+    then runs a PCA on it
+    thus reducing the 55k generated features from before to on the order of 10
   data is taken in from c_epg.inter_dir and saved to c_epg.inter_dir
 NOTES
   [none]
@@ -17,7 +18,7 @@ RESOURCES
 CONVENTIONS
   [none]
 KNOWN BUGS
-  [none]
+  -- weird behaviour: PCA on train => test are always outliers for all configurations
 DESIRED FEATURES
   [none]
 '''

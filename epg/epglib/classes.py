@@ -19,6 +19,7 @@ DESIRED FEATURES
 '''
 
 # external imports
+# import time
 # import math
 import numpy as np
 import pandas as pd
@@ -82,7 +83,7 @@ class DataEPG():
         # split the data: training, testing
         print("- split the dataset into training data and test data")
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=cfg.test_size, random_state=0)
-        # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=cfg.test_size, random_state=math.floor(t_now))
+        # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=cfg.test_size, random_state=math.floor(time.time()))
         
         self.X_train = X_train
         self.X_test = X_test
@@ -124,7 +125,7 @@ class DataEPG():
         
     def exec_PCA(self) -> None:
         '''
-        METHOD: exec_PCA = execute the PCA on X_train and X_test based on the X_train parameters
+        METHOD: exec_PCA = execute the PCA on X_train and X_test based on the X_train data
            OUT: << X_train and X_test altered, pass object by reference >>
         '''
         print("\n- perform the PCA")
@@ -189,12 +190,21 @@ class DataEPG():
         '''
         self.X_HC = np.empty((0, self.X_train.shape[1]))
         self.X_SZ = np.empty((0, self.X_train.shape[1]))
-
+        
+        # add in the training data
         for ii in range(len(self.y_train)):
             if self.y_train.iloc[ii] == 0:
                 self.X_HC = np.append(self.X_HC, [self.X_train[ii, :]], axis=0)
             elif self.y_train.iloc[ii] == 1:
                 self.X_SZ = np.append(self.X_SZ, [self.X_train[ii, :]], axis=0)
+        
+        # add in the test data
+        for ii in range(len(self.y_test)):
+        # for ii in [2]:
+            if self.y_test.iloc[ii] == 0:
+                self.X_HC = np.append(self.X_HC, [self.X_test[ii, :]], axis=0)
+            elif self.y_test.iloc[ii] == 1:
+                self.X_SZ = np.append(self.X_SZ, [self.X_test[ii, :]], axis=0)
     
     def plot_PC(self, fig_dir_now: str) -> None:
         '''
