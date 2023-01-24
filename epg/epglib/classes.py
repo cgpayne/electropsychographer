@@ -74,7 +74,8 @@ class PatientDF():
 
 class DataEPG():
     '''
-    Methods are listed in order of operation
+    CLASS: DataEPG = holds the design matrix and response and corresponding PCA methods
+           methods are listed in order of operation
     '''
     # CONSTRUCTOR
     def __init__(self, X: pd.DataFrame, y: pd.Series) -> None:
@@ -89,6 +90,9 @@ class DataEPG():
         self.y_test = y_test
     
     def print_Xy(self) -> None:
+        '''
+        METHOD: print_Xy = print X_train, y_train, X_test, then y_test
+        '''
         print("\n  -- X_train =")
         print(self.X_train)
         print("\n  -- y_train =")
@@ -100,24 +104,38 @@ class DataEPG():
         print(self.y_test)
     
     def print_X(self) -> None:
+        '''
+        METHOD: print_X = print X-train then X_test
+        '''
         print("\n  -- X_train =")
         print(self.X_train)
         print("\n  -- X_test =")
         print(self.X_test)
     
     def scale_X(self) -> None:
+        '''
+        METHOD: scale_X = Z-score X_train and X_test based on the X_train parameters
+           OUT: << X_train and X_test altered, pass object by reference >>
+        '''
         print('- scale the data via Z-score')
         sc = StandardScaler()  # scale via Z-score
         self.X_train = sc.fit_transform(self.X_train)  # fit and transform the X_train data via Z-score
         self.X_test = sc.transform(self.X_test)        # transform the X_test data using the mean and standard deviation fit from X_train
         
     def exec_PCA(self) -> None:
+        '''
+        METHOD: exec_PCA = execute the PCA on X_train and X_test based on the X_train parameters
+           OUT: << X_train and X_test altered, pass object by reference >>
+        '''
         print("\n- perform the PCA")
         self.pca = PCA()
         self.X_train = self.pca.fit_transform(self.X_train)
         self.X_test = self.pca.transform(self.X_test)
     
     def set_ev(self) -> None:
+        '''
+        METHOD: set_ev = set the explained_variance, num_components, and cummulative_ev variables
+        '''
         self.explained_variance = self.pca.explained_variance_ratio_
         self.num_components = len(self.explained_variance)
         print(f"  -- explained_variance = {self.explained_variance}")
@@ -131,6 +149,11 @@ class DataEPG():
         print(f"  -- cummulative_ev = {self.cummulative_ev}")
     
     def plot_ev(self, fig_dir_now: str) -> None:
+        '''
+        METHOD: plot_ev = plot the explained variance
+            IN: fig_dir_now = the directory that holds the generated figures
+            OUT: << figures saved to fig_dir_now >>
+        '''
         print("    --- ...explained variance...")
         plt.figure()
         plt.bar(range(1, self.num_components+1), self.explained_variance)
@@ -143,6 +166,11 @@ class DataEPG():
             plt.show()
     
     def plot_cev(self, fig_dir_now: str) -> None:
+        '''
+        METHOD: plot_ev = plot the *cummulative* explained variance
+            IN: fig_dir_now = the directory that holds the generated figures
+            OUT: << figures saved to fig_dir_now >>
+        '''
         print("    --- ...cummulative explained variance...")
         plt.figure()
         plt.bar(range(1, self.num_components+1), self.cummulative_ev)
@@ -155,6 +183,10 @@ class DataEPG():
             plt.show()
     
     def set_HCSZ(self) -> None:
+        '''
+        METHOD: set_HCSZ = separate the X_train into healthy controls (HC) and schizophrenia (SZ) patients
+           OUT: << assign X_HC and X_SZ to self >>
+        '''
         self.X_HC = np.empty((0, self.X_train.shape[1]))
         self.X_SZ = np.empty((0, self.X_train.shape[1]))
 
@@ -165,6 +197,11 @@ class DataEPG():
                 self.X_SZ = np.append(self.X_SZ, [self.X_train[ii, :]], axis=0)
     
     def plot_PC(self, fig_dir_now: str) -> None:
+        '''
+        METHOD: plot_PC = plot PC1 vs PC2 and PC2 vs PC3 for the HC and SZ data
+            IN: fig_dir_now = the directory that holds the generated figures
+           OUT: << figures saved to fig_dir_now >>
+        '''
         print("    --- ...PC1 vs PC2...")
         plt.figure()
         plt.scatter(self.X_HC[:, 0], self.X_HC[:, 1], label='HC')
