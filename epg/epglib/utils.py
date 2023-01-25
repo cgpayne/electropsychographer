@@ -18,9 +18,21 @@ DESIRED FEATURES
   [none]
 '''
 
+# externel imports
+import sys
 import time
 import datetime
 import os
+
+
+def eprint(*args, **kwargs):
+    '''
+    FUNCTION: eprint = print to stderr
+          IN: << same as print >>
+         OUT: << print to stderr >>
+    '''
+    sys.stdout.flush()  # so stederr doesn't redirect to top of file with 2>&1
+    print(*args, file=sys.stderr, **kwargs)
 
 
 def time_stamp(t_del: float, t_zero: float, stamp: str) -> None:

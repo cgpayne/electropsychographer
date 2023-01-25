@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 '''
 run_PCA.py = run the Principal Component Analysis (PCA)
-  python3 run_PCA.py
+  python3 run_PCA.py <pca_mode>
   Copyright (c) 2022 Charlie Payne
   Licence: GNU GPLv3
 DESCRIPTION
@@ -18,12 +18,13 @@ RESOURCES
 CONVENTIONS
   [none]
 KNOWN BUGS
-  -- weird behaviour: PCA on train => test are always outliers for all configurations
+  -- weird behaviour: (Kernel)PCA on train => test are always outliers for all configurations
 DESIRED FEATURES
   [none]
 '''
 
 # external imports
+import sys
 import time
 import pandas as pd
 
@@ -31,10 +32,21 @@ import pandas as pd
 import epglib.constants as c_epg
 from config import user_config as cfg
 import epglib.utils as ut
+from epglib.utils import eprint
 import epglib.classes as cls
+
+pca_mode = sys.argv[1]  # 'pca' for regular PCA, 'kernel' for KernelPCA
 
 
 if __name__ == '__main__':
+    # parse the input
+    if pca_mode not in ['pca', 'kernel']:
+        eprint("ERROR 756: invalid option for pca_mode!")
+        eprint(f"pca_mode = {pca_mode}")
+        eprint("valid options are: 'pca', 'kernel'")
+        eprint("exiting...")
+        sys.exit(1)
+    
     ## set up for the PCA
     t_zero = time.time()  # start the clock
     t_now = t_zero
@@ -70,26 +82,29 @@ if __name__ == '__main__':
     epg.print_X()
     t_now = ut.time_stamp(t_now, t_zero, 'scaled data')  # TIME STAMP
     
-    ## perform the PCA
-    epg.exec_PCA()
+    ## perform the PCA and plot
+    epg.exec_PCA(pca_mode)
     epg.print_X()
     t_now = ut.time_stamp(t_now, t_zero, 'PCA')  # TIME STAMP
     
-    # plot the explained variance
-    epg.set_ev()
-    print("  -- plotting...")
     fig_dir_now = c_epg.fig_dir + '/' + cfg.data_handle
-    ut.make_dir(fig_dir_now)
-    epg.plot_ev(fig_dir_now)
-    
-    # plot the cummulative explained variance
-    epg.plot_cev(fig_dir_now)
+    if pca_mode == 'pca':
+        # plot the explained variance
+        epg.set_ev()
+        print("  -- plotting...")
+        ut.make_dir(fig_dir_now)
+        epg.plot_ev(fig_dir_now)
+        
+        # plot the cummulative explained variance
+        epg.plot_cev(fig_dir_now)
+    elif pca_mode == 'kernel':
+        print("  -- plotting...")
     
     # split out training data into control (HC) and schizophrenia (SZ)
     epg.set_HCSZ()
     
     # plot PC1 vs PC2 then PC2 vs PC3
-    epg.plot_PC(fig_dir_now)
+    epg.plot_PC(pca_mode, fig_dir_now)
     
     print("     ...done.")
     t_now = ut.time_stamp(t_now, t_zero, 'plotting')  # TIME STAMP

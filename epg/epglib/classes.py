@@ -27,6 +27,7 @@ import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
+from sklearn.decomposition import KernelPCA
 
 # internal imports
 # import epglib.constants as c_epg
@@ -123,13 +124,18 @@ class DataEPG():
         self.X_train = sc.fit_transform(self.X_train)  # fit and transform the X_train data via Z-score
         self.X_test = sc.transform(self.X_test)        # transform the X_test data using the mean and standard deviation fit from X_train
         
-    def exec_PCA(self) -> None:
+    def exec_PCA(self, pca_mode: str) -> None:
         '''
-        METHOD: exec_PCA = execute the PCA on X_train and X_test based on the X_train data
+        METHOD: exec_PCA = execute the (kernel) PCA on X_train and X_test based on the X_train data
+            IN: pca_mode = 'pca' for regular PCA, 'kernel' for KernelPCA
            OUT: << X_train and X_test altered, pass object by reference >>
         '''
-        print("\n- perform the PCA")
-        self.pca = PCA()
+        if pca_mode == 'pca':
+            print("\n- perform the PCA")
+            self.pca = PCA()
+        elif pca_mode == 'kernel':
+            print("\n- perform a kernel PCA")
+            self.pca = KernelPCA(kernel='linear')
         self.X_train = self.pca.fit_transform(self.X_train)
         self.X_test = self.pca.transform(self.X_test)
     
@@ -198,18 +204,19 @@ class DataEPG():
             elif self.y_train.iloc[ii] == 1:
                 self.X_SZ = np.append(self.X_SZ, [self.X_train[ii, :]], axis=0)
         
-        # add in the test data
-        for ii in range(len(self.y_test)):
-        # for ii in [2]:
-            if self.y_test.iloc[ii] == 0:
-                self.X_HC = np.append(self.X_HC, [self.X_test[ii, :]], axis=0)
-            elif self.y_test.iloc[ii] == 1:
-                self.X_SZ = np.append(self.X_SZ, [self.X_test[ii, :]], axis=0)
+        # # add in the test data
+        # for ii in range(len(self.y_test)):
+        # # for ii in [2]:
+        #     if self.y_test.iloc[ii] == 0:
+        #         self.X_HC = np.append(self.X_HC, [self.X_test[ii, :]], axis=0)
+        #     elif self.y_test.iloc[ii] == 1:
+        #         self.X_SZ = np.append(self.X_SZ, [self.X_test[ii, :]], axis=0)
     
-    def plot_PC(self, fig_dir_now: str) -> None:
+    def plot_PC(self, pca_mode: str, fig_dir_now: str) -> None:
         '''
         METHOD: plot_PC = plot PC1 vs PC2 and PC2 vs PC3 for the HC and SZ data
-            IN: fig_dir_now = the directory that holds the generated figures
+            IN: pca_mode = 'pca' for regular PCA, 'kernel' for KernelPCA
+                fig_dir_now = the directory that holds the generated figures
            OUT: << figures saved to fig_dir_now >>
         '''
         print("    --- ...PC1 vs PC2...")
@@ -218,8 +225,12 @@ class DataEPG():
         plt.scatter(self.X_SZ[:, 0], self.X_SZ[:, 1], label='SZ')
         plt.legend()
         plt.title('PC1 vs PC2')
-        plt.xlabel(f"PC1 = {100*self.explained_variance[0]:.2f}%")
-        plt.ylabel(f"PC2 = {100*self.explained_variance[1]:.2f}%")
+        if pca_mode == 'pca':
+            plt.xlabel(f"PC1 = {100*self.explained_variance[0]:.2f}%")
+            plt.ylabel(f"PC2 = {100*self.explained_variance[1]:.2f}%")
+        elif pca_mode == 'kernel':
+            plt.xlabel("PC1")
+            plt.ylabel("PC2")
         plt.savefig(fig_dir_now + '/PC1_vs_PC2.pdf')
         if cfg.pca_show_fig == 'on':
             plt.show()
@@ -229,8 +240,12 @@ class DataEPG():
         plt.scatter(self.X_HC[:, 1], self.X_HC[:, 2], label='HC')
         plt.scatter(self.X_SZ[:, 1], self.X_SZ[:, 2], label='SZ')
         plt.title('PC2 vs PC3')
-        plt.xlabel(f"PC2 = {100*self.explained_variance[1]:.2f}%")
-        plt.ylabel(f"PC3 = {100*self.explained_variance[2]:.2f}%")
+        if pca_mode == 'pca':
+            plt.xlabel(f"PC2 = {100*self.explained_variance[1]:.2f}%")
+            plt.ylabel(f"PC3 = {100*self.explained_variance[2]:.2f}%")
+        elif pca_mode == 'kernel':
+            plt.xlabel("PC2")
+            plt.ylabel("PC3")
         plt.legend()
         plt.savefig(fig_dir_now + '/PC2_vs_PC3.pdf')
         if cfg.pca_show_fig == 'on':
