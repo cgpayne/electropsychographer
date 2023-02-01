@@ -85,6 +85,7 @@ class DataEPG():
         print("- split the dataset into training data and test data")
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=cfg.test_size, random_state=0)
         # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=cfg.test_size, random_state=math.floor(time.time()))
+        # dd = 74; X_train = X.drop(index=[dd]); X_test = X.loc[[dd]]; y_train = y.drop(index=[dd]); y_test = y.loc[[dd]]
         
         self.X_train = X_train
         self.X_test = X_test
@@ -123,7 +124,7 @@ class DataEPG():
         sc = StandardScaler()  # scale via Z-score
         self.X_train = sc.fit_transform(self.X_train)  # fit and transform the X_train data via Z-score
         self.X_test = sc.transform(self.X_test)        # transform the X_test data using the mean and standard deviation fit from X_train
-        
+    
     def exec_PCA(self, pca_mode: str) -> None:
         '''
         METHOD: exec_PCA = execute the (kernel) PCA on X_train and X_test based on the X_train data
@@ -204,13 +205,13 @@ class DataEPG():
             elif self.y_train.iloc[ii] == 1:
                 self.X_SZ = np.append(self.X_SZ, [self.X_train[ii, :]], axis=0)
         
-        # # add in the test data
-        # for ii in range(len(self.y_test)):
-        # # for ii in [2]:
-        #     if self.y_test.iloc[ii] == 0:
-        #         self.X_HC = np.append(self.X_HC, [self.X_test[ii, :]], axis=0)
-        #     elif self.y_test.iloc[ii] == 1:
-        #         self.X_SZ = np.append(self.X_SZ, [self.X_test[ii, :]], axis=0)
+        # add in the test data
+        for ii in range(len(self.y_test)):
+        # for ii in [2]:
+            if self.y_test.iloc[ii] == 0:
+                self.X_HC = np.append(self.X_HC, [self.X_test[ii, :]], axis=0)
+            elif self.y_test.iloc[ii] == 1:
+                self.X_SZ = np.append(self.X_SZ, [self.X_test[ii, :]], axis=0)
     
     def plot_PC(self, pca_mode: str, fig_dir_now: str) -> None:
         '''
