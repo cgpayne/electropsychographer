@@ -206,8 +206,8 @@ class DataEPG():
                 self.X_SZ = np.append(self.X_SZ, [self.X_train[ii, :]], axis=0)
         
         # add in the test data
-        for ii in range(len(self.y_test)):
         # for ii in [2]:
+        for ii in range(len(self.y_test)):
             if self.y_test.iloc[ii] == 0:
                 self.X_HC = np.append(self.X_HC, [self.X_test[ii, :]], axis=0)
             elif self.y_test.iloc[ii] == 1:

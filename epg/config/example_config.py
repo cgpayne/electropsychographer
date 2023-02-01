@@ -60,9 +60,19 @@ fname_fgen = 'feature_gen_cond' + str(selected_condition) + '_pat1-2.csv'
 # fname_fgen = 'feature_gen_cond' + str(selected_condition) + '_pat1to81.csv'
 
 
+# feature_gen_post.py
+
+eps_flat = 1e-6  # to flatten values to zero within |x| < eps_flat
+test_size_fgp = 0.2  # ratio of test data to full dataset (see test_size)
+
+# fname_fgen_post_in = fname_fgen
+fname_fgen_post_in = 'feature_gen_cond1_pat59to74.csv'  # no 'post'
+fname_fgen_post_out = 'feature_gen_post_cond1_pat59to74.csv'  # includes 'post'
+
+
 # run_PCA.py
 
 data_handle = 'cond1_pat59to74'
-fname_pca = 'feature_gen_' + data_handle + '.csv'
-test_size = 0.2  # ratio of test data to full dataset
-pca_show_fig = 'off'  # 'on' = run plt.show()
+fname_pca_in = 'feature_gen_post_' + data_handle + '.csv'
+test_size = test_size_fgp  # test_size should be equal to the test_size_fgp corresponding to fname_pca_in
+pca_show_fig = 'on'  # 'on' = run plt.show()

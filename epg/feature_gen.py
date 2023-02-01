@@ -9,7 +9,7 @@ DESCRIPTION
   it takes in the pruned data, concatenates it, then generates features of the
     time series using a package called ts-fresh
   there tends to be around 55,230 features generated, which are reduced via
-    PCA in the following script (run_PCA.py)
+    PCA in the script (run_PCA.py) following feature_gen_post.py
   data is taken in from c_epg.pruned_dir, processed, and saved to c_epg.inter_dir
 NOTES
   [none]
@@ -116,29 +116,12 @@ if __name__ == '__main__':
     print("  -- df_extracted =")
     print(df_extracted, '\n')
     
-    # fill in empty values via imputation
-    print("- imputing the data...")
-    impute(df_extracted)
-    print("  ...done.")
-    t_now = ut.time_stamp(t_now, t_zero, 'imputation')  # TIME STAMP
-    
-    # find all features with all zeros, and remove them
-    conditional = (df_extracted.T.iloc[:, 0] == 0)
-    for ii in range(1, len(df_extracted)):
-        conditional = (df_extracted.T.iloc[:, ii] == 0) & conditional
-    df_allzeros = df_extracted.T[conditional]
-    num_zeros = len(df_allzeros)
-    num_features = df_extracted.shape[1]
-    print(f"- there are {num_zeros} ({100*num_zeros/num_features:.1f}%) out of {num_features} many generated features which are filled with all zeros\n")
-    print("  -- now removing said features")
-    df_extracted = df_extracted.drop(columns=df_allzeros.index)
-    
     # output to csv
     print("- saving to file")
     ut.make_dir(c_epg.inter_dir)
     df_extracted.index.name = 'subject'
     df_extracted.to_csv(c_epg.inter_dir + '/' + cfg.fname_fgen)
-    t_now = ut.time_stamp(t_now, t_zero, 'check/remove all zeros, save')  # TIME STAMP
+    t_now = ut.time_stamp(t_now, t_zero, 'feature generation, save')  # TIME STAMP
 
 
     # F- I-- N---

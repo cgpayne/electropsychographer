@@ -51,11 +51,11 @@ if __name__ == '__main__':
     t_zero = time.time()  # start the clock
     t_now = t_zero
     
-    print(f"- processing: {cfg.fname_pca}\n")
+    print(f"- processing: {cfg.fname_pca_in}\n")
     
     # load in the data
     print("- loading in the data")
-    X = pd.read_csv(c_epg.inter_dir + '/' + cfg.fname_pca, index_col='subject')
+    X = pd.read_csv(c_epg.inter_dir + '/' + cfg.fname_pca_in, index_col='subject')
     # X = X.iloc[:, 25807:25840]  # testing for bad features (eg, 25807)
     print(X)
     
