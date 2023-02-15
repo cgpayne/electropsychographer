@@ -72,7 +72,7 @@ fname_fgen_post_out = 'feature_gen_post_cond1_pat59to74.csv'  # includes 'post'
 
 # run_PCA.py
 
-data_handle = 'cond1_pat59to74'
-fname_pca_in = 'feature_gen_post_' + data_handle + '.csv'
+pca_data_handle = 'cond1_pat59to74'
+fname_pca_in = 'feature_gen_post_' + pca_data_handle + '.csv'
 test_size = test_size_fgp  # test_size should be equal to the test_size_fgp corresponding to fname_pca_in
-pca_show_fig = 'on'  # 'on' = run plt.show()
+pca_show_fig = 'off'  # 'on' = run plt.show()

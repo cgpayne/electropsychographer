@@ -35,15 +35,15 @@ import epglib.utils as ut
 from epglib.utils import eprint
 import epglib.classes as cls
 
-pca_mode = sys.argv[1]  # 'pca' for regular PCA, 'kernel' for KernelPCA
+pca_mode = sys.argv[1]  # 'pca' for regular PCA, 'kpca' for KernelPCA
 
 
 if __name__ == '__main__':
     # parse the input
-    if pca_mode not in ['pca', 'kernel']:
+    if pca_mode not in ['pca', 'kpca']:
         eprint("ERROR 756: invalid option for pca_mode!")
         eprint(f"pca_mode = {pca_mode}")
-        eprint("valid options are: 'pca', 'kernel'")
+        eprint("valid options are: 'pca', 'kpca'")
         eprint("exiting...")
         sys.exit(1)
     
@@ -86,7 +86,7 @@ if __name__ == '__main__':
     epg.print_X()
     t_now = ut.time_stamp(t_now, t_zero, 'PCA')  # TIME STAMP
     
-    fig_dir_now = c_epg.fig_dir + '/' + cfg.data_handle
+    fig_dir_now = c_epg.fig_dir + '/' + cfg.pca_data_handle
     if pca_mode == 'pca':
         # plot the explained variance
         epg.set_ev()
@@ -107,6 +107,10 @@ if __name__ == '__main__':
     
     print("     ...done.")
     t_now = ut.time_stamp(t_now, t_zero, 'plotting')  # TIME STAMP
+    
+    # save to file
+    epg.save(pca_mode)
+    t_now = ut.time_stamp(t_now, t_zero, 'save')  # TIME STAMP
     
     
     print('\n\nF- I-- N---')

@@ -30,9 +30,9 @@ from sklearn.decomposition import PCA
 from sklearn.decomposition import KernelPCA
 
 # internal imports
-# import epglib.constants as c_epg
+import epglib.constants as c_epg
 from config import user_config as cfg
-# import epglib.utils as ut
+import epglib.utils as ut
 
 
 class PatientDF():
@@ -128,13 +128,13 @@ class DataEPG():
     def exec_PCA(self, pca_mode: str) -> None:
         '''
         METHOD: exec_PCA = execute the (kernel) PCA on X_train and X_test based on the X_train data
-            IN: pca_mode = 'pca' for regular PCA, 'kernel' for KernelPCA
+            IN: pca_mode = 'pca' for regular PCA, 'kpca' for KernelPCA
            OUT: << X_train and X_test altered, pass object by reference >>
         '''
         if pca_mode == 'pca':
             print("\n- perform the PCA")
             self.pca = PCA()
-        elif pca_mode == 'kernel':
+        elif pca_mode == 'kpca':
             print("\n- perform a kernel PCA")
             self.pca = KernelPCA(kernel='linear')
         self.X_train = self.pca.fit_transform(self.X_train)
@@ -216,7 +216,7 @@ class DataEPG():
     def plot_PC(self, pca_mode: str, fig_dir_now: str) -> None:
         '''
         METHOD: plot_PC = plot PC1 vs PC2 and PC2 vs PC3 for the HC and SZ data
-            IN: pca_mode = 'pca' for regular PCA, 'kernel' for KernelPCA
+            IN: pca_mode = 'pca' for regular PCA, 'kpca' for KernelPCA
                 fig_dir_now = the directory that holds the generated figures
            OUT: << figures saved to fig_dir_now >>
         '''
@@ -229,7 +229,7 @@ class DataEPG():
         if pca_mode == 'pca':
             plt.xlabel(f"PC1 = {100*self.explained_variance[0]:.2f}%")
             plt.ylabel(f"PC2 = {100*self.explained_variance[1]:.2f}%")
-        elif pca_mode == 'kernel':
+        elif pca_mode == 'kpca':
             plt.xlabel("PC1")
             plt.ylabel("PC2")
         plt.savefig(fig_dir_now + '/PC1_vs_PC2.pdf')
@@ -244,10 +244,26 @@ class DataEPG():
         if pca_mode == 'pca':
             plt.xlabel(f"PC2 = {100*self.explained_variance[1]:.2f}%")
             plt.ylabel(f"PC3 = {100*self.explained_variance[2]:.2f}%")
-        elif pca_mode == 'kernel':
+        elif pca_mode == 'kpca':
             plt.xlabel("PC2")
             plt.ylabel("PC3")
         plt.legend()
         plt.savefig(fig_dir_now + '/PC2_vs_PC3.pdf')
         if cfg.pca_show_fig == 'on':
             plt.show()
+    
+    def save(self, pca_mode: str) -> None:
+        '''
+        METHOD: save = save the y's and X's to csv
+           OUT: << csv's saved to c_epg.inter_dir >>
+          NOTE: must run set_HCSZ() before performing this method
+        '''
+        print("- saving y's and X's to csv")
+        out_dir = c_epg.inter_dir + '/' + cfg.pca_data_handle + '_' + pca_mode
+        ut.make_dir(out_dir)
+        self.y_train.to_csv(out_dir + '/y_train_' + cfg.pca_data_handle + '.csv')
+        self.y_test.to_csv(out_dir + '/y_test_' + cfg.pca_data_handle + '.csv')
+        np.savetxt(out_dir + '/X_train_' + cfg.pca_data_handle + '.csv', self.X_train, delimiter=',')
+        np.savetxt(out_dir + '/X_test_' + cfg.pca_data_handle + '.csv', self.X_test, delimiter=',')
+        np.savetxt(out_dir + '/X_HC_' + cfg.pca_data_handle + '.csv', self.X_HC, delimiter=',')
+        np.savetxt(out_dir + '/X_SZ_' + cfg.pca_data_handle + '.csv', self.X_SZ, delimiter=',')

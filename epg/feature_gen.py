@@ -28,7 +28,6 @@ import time
 import csv
 import pandas as pd
 from tsfresh import extract_features
-from tsfresh.utilities.dataframe_functions import impute
 
 # internal imports
 import epglib.constants as c_epg
