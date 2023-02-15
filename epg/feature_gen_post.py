@@ -84,3 +84,6 @@ if __name__ == '__main__':
     ut.make_dir(c_epg.inter_dir)
     df_extracted.to_csv(c_epg.inter_dir + '/' + cfg.fname_fgen_post_out)
     t_now = ut.time_stamp(t_now, t_zero, 'check/remove all zeros, save')  # TIME STAMP
+    
+    
+    print('\n\nF- I-- N---')

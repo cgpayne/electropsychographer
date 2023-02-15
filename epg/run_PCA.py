@@ -109,5 +109,4 @@ if __name__ == '__main__':
     t_now = ut.time_stamp(t_now, t_zero, 'plotting')  # TIME STAMP
     
     
-    # F- I-- N---
     print('\n\nF- I-- N---')
