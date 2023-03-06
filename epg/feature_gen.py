@@ -8,7 +8,7 @@ DESCRIPTION
   this code is the work horse of the electropsychographer
   it takes in the pruned data, concatenates it, then generates features of the
     time series using a package called ts-fresh
-  there tends to be around 55,230 features generated, which are reduced via
+  there tends to be around 54,810 features generated, which are reduced via
     PCA in the script (run_PCA.py) following feature_gen_post.py
   data is taken in from c_epg.pruned_dir, processed, and saved to c_epg.inter_dir
 NOTES
@@ -28,6 +28,7 @@ import time
 import csv
 import pandas as pd
 from tsfresh import extract_features
+from tsfresh.feature_extraction import EfficientFCParameters
 
 # internal imports
 import epglib.constants as c_epg
@@ -109,8 +110,12 @@ if __name__ == '__main__':
     t_now = ut.time_stamp(t_now, t_zero, "concatenation")  # TIME STAMP
     
     ## feature generation using ts-fresh
-    print("- generating the features using ts-fresh...")
-    df_extracted = extract_features(df_all_pats, column_id="subject", column_sort="sample")
+    print("- generating the features using ts-fresh with EfficientFCParameters...")
+    settings = EfficientFCParameters()
+    df_extracted = extract_features(df_all_pats,
+                                    column_id="subject",
+                                    column_sort="sample",
+                                    default_fc_parameters=settings)
     print("  ...done.")
     print("  -- df_extracted =")
     print(df_extracted, '\n')

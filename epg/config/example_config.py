@@ -47,15 +47,21 @@ patients_dp = {
 
 selected_condition = 1  # experimental modes, see data/my_meta.txt
 
-patients_fg = [1, 2]  # 0:16:35, 55230 features, 1943 features with all zeros
+# ComprehensiveFCParameters:
+# patients_fg = [1, 2]  # 0:16:35, 55230 features, 1943 features with all zeros
 # patients_fg = [1, 2, 67, 69]  # 0:31:08, 55230 features, 1922 features with all zeros
 # patients_fg = range(59, 74+1)  # half 0, half 1; 2:07:17, 55230 features, 1870 features with all zeros
 # runtime regression is very linear: T = 7.4*N + 1.66 => T(81) = 601min = 10 hours
-# patients_fg = range(1, 81+1)
+
+# EfficientFCParameters:
+# patients_fg = [1, 2]  # 0:01:14, 54810 features, 2202 features with all zeros
+patients_fg = [1, 2, 67, 69]  # 0:02:23, 54810 features, 2090 features with all zeros
+# patients_fg = range(59, 74+1)  # half 0, half 1; 0:09:02, 54810 features, 2033 features with all zeros
+# runtime regression is very linear: T = 0.556*N + 0.139 => T(81) = 45min
 
 # fname_fgen = 'testing.csv'
-fname_fgen = 'feature_gen_cond' + str(selected_condition) + '_pat1-2.csv'
-# fname_fgen = 'feature_gen_cond' + str(selected_condition) + '_pat1-2-67-69.csv'
+# fname_fgen = 'feature_gen_cond' + str(selected_condition) + '_pat1-2.csv'
+fname_fgen = 'feature_gen_cond' + str(selected_condition) + '_pat1-2-67-69.csv'
 # fname_fgen = 'feature_gen_cond' + str(selected_condition) + '_pat59to74.csv'
 # fname_fgen = 'feature_gen_cond' + str(selected_condition) + '_pat1to81.csv'
 
@@ -66,8 +72,12 @@ eps_flat = 1e-6  # to flatten values to zero within |x| < eps_flat
 test_size_fgp = 0.2  # ratio of test data to full dataset (see test_size)
 
 # fname_fgen_post_in = fname_fgen
-fname_fgen_post_in = 'feature_gen_cond1_pat59to74.csv'  # no 'post'
-fname_fgen_post_out = 'feature_gen_post_cond1_pat59to74.csv'  # includes 'post'
+# fname_fgen_post_in = 'feature_gen_cond1_pat1-2.csv'  # no 'post' in name
+# fname_fgen_post_out = 'feature_gen_post_cond1_pat1-2.csv'  # includes 'post' in name
+fname_fgen_post_in = 'feature_gen_cond1_pat1-2-67-69.csv'  # no 'post' in name
+fname_fgen_post_out = 'feature_gen_post_cond1_pat1-2-67-69.csv'  # includes 'post' in name
+# fname_fgen_post_in = 'feature_gen_cond1_pat59to74.csv'  # no 'post' in name
+# fname_fgen_post_out = 'feature_gen_post_cond1_pat59to74.csv'  # includes 'post' in name
 
 
 # run_PCA.py
@@ -75,4 +85,4 @@ fname_fgen_post_out = 'feature_gen_post_cond1_pat59to74.csv'  # includes 'post'
 pca_data_handle = 'cond1_pat59to74'
 fname_pca_in = 'feature_gen_post_' + pca_data_handle + '.csv'
 test_size = test_size_fgp  # test_size should be equal to the test_size_fgp corresponding to fname_pca_in
-pca_show_fig = 'off'  # 'on' = run plt.show()
+pca_show_fig = 'on'  # 'on' = run plt.show()
