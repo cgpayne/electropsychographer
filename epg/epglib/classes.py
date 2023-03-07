@@ -19,8 +19,8 @@ DESIRED FEATURES
 '''
 
 # external imports
-# import time
-# import math
+import time
+import math
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -83,10 +83,20 @@ class DataEPG():
     def __init__(self, X: pd.DataFrame, y: pd.Series) -> None:
         # split the data: training, testing
         print("- split the dataset into training data and test data")
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=cfg.test_size, random_state=0)
-        # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=cfg.test_size, random_state=math.floor(time.time()))
+        # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=cfg.test_size, random_state=0)
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=cfg.test_size, random_state=math.floor(time.time()))
         # dd = 74; X_train = X.drop(index=[dd]); X_test = X.loc[[dd]]; y_train = y.drop(index=[dd]); y_test = y.loc[[dd]]
         
+        # do some book keeping
+        y_train_count0 = len([sub for sub in y_train if sub == 0])
+        y_train_count1 = len(y_train) - y_train_count0
+        y_test_count0 = len([sub for sub in y_test if sub == 0])
+        y_test_count1 = len(y_test) - y_test_count0
+        print(f"  -- y_train has {y_train_count1} / {y_train_count0} = {y_train_count1/y_train_count0:.2f}x 1's to 0's")
+        print(f"     y_test has {y_test_count1} / {y_test_count0} = {y_test_count1/y_test_count0:.2f}x 1's to 0's")
+        print(f"     compared to 49 / 32 = {49/32:.2f}x 1's (SZ) to 0's (HC) in the full dataset")
+        
+        # set the members
         self.X_train = X_train
         self.X_test = X_test
         self.y_train = y_train
