@@ -27,7 +27,7 @@ import epglib.constants as c_epg
 
 # data_pruning.py
 patients_dp = {
-               1: 90, 2: 90
+               # 1: 90, 2: 90
                # 1: 90, 2: 90, 67: 90
                # 69: 90
                # 3: 90, 4: 90, 5: 90, 6: 90, 7: 90, 8: 90, 9: 90
@@ -40,7 +40,8 @@ patients_dp = {
                # 60: 90, 61: 90, 62: 90, 63: 90, 64: 90, 65: 90,
                # 70: 90, 71: 90, 72: 90, 73: 90, 74: 90, 75: 90, 76: 90, 77: 90, 78: 90, 79: 90
                # 51: 19, 61: 91, 77: 91  # 51 = outlier?
-              }  # keys = patient, values = late-stage trial with all three conditions
+               10: 90, 11: 90, 12: 90, 13: 90, 14: 90, 15: 90, 16: 90, 17: 90, 18: 90, 19: 90
+              }  # keys = patient, values = latest-stage trial with all three conditions (default to <= 90)
 
 
 # feature_gen.py
@@ -55,15 +56,16 @@ selected_condition = 1  # experimental modes, see data/my_meta.txt
 
 # EfficientFCParameters:
 # patients_fg = [1, 2]  # 0:01:14, 54810 features, 2202 features with all zeros
-patients_fg = [1, 2, 67, 69]  # 0:02:23, 54810 features, 2090 features with all zeros
+# patients_fg = [1, 2, 67, 69]  # 0:02:23, 54810 features, 2090 features with all zeros
 # patients_fg = range(59, 74+1)  # half 0, half 1; 0:09:02, 54810 features, 2033 features with all zeros
 # runtime regression is very linear: T = 0.556*N + 0.139 => T(81) = 45min
+patients_fg = range(1, 81+1)  # full dataset; 0:44:38, 54810 features, 2021 features with all zeros
 
 # fname_fgen = 'testing.csv'
 # fname_fgen = 'feature_gen_cond' + str(selected_condition) + '_pat1-2.csv'
-fname_fgen = 'feature_gen_cond' + str(selected_condition) + '_pat1-2-67-69.csv'
+# fname_fgen = 'feature_gen_cond' + str(selected_condition) + '_pat1-2-67-69.csv'
 # fname_fgen = 'feature_gen_cond' + str(selected_condition) + '_pat59to74.csv'
-# fname_fgen = 'feature_gen_cond' + str(selected_condition) + '_pat1to81.csv'
+fname_fgen = 'feature_gen_cond' + str(selected_condition) + '_pat1to81.csv'
 
 
 # feature_gen_post.py
@@ -74,15 +76,18 @@ test_size_fgp = 0.2  # ratio of test data to full dataset (see test_size)
 # fname_fgen_post_in = fname_fgen
 # fname_fgen_post_in = 'feature_gen_cond1_pat1-2.csv'  # no 'post' in name
 # fname_fgen_post_out = 'feature_gen_post_cond1_pat1-2.csv'  # includes 'post' in name
-fname_fgen_post_in = 'feature_gen_cond1_pat1-2-67-69.csv'  # no 'post' in name
-fname_fgen_post_out = 'feature_gen_post_cond1_pat1-2-67-69.csv'  # includes 'post' in name
+# fname_fgen_post_in = 'feature_gen_cond1_pat1-2-67-69.csv'  # no 'post' in name
+# fname_fgen_post_out = 'feature_gen_post_cond1_pat1-2-67-69.csv'  # includes 'post' in name
 # fname_fgen_post_in = 'feature_gen_cond1_pat59to74.csv'  # no 'post' in name
 # fname_fgen_post_out = 'feature_gen_post_cond1_pat59to74.csv'  # includes 'post' in name
+fname_fgen_post_in = 'feature_gen_cond1_pat1to81.csv'  # no 'post' in name
+fname_fgen_post_out = 'feature_gen_post_cond1_pat1to81.csv'  # includes 'post' in name
 
 
 # run_PCA.py
 
-pca_data_handle = 'cond1_pat59to74'
+# pca_data_handle = 'cond1_pat59to74'
+pca_data_handle = 'cond1_pat1to81'
 fname_pca_in = 'feature_gen_post_' + pca_data_handle + '.csv'
 test_size = test_size_fgp  # test_size should be equal to the test_size_fgp corresponding to fname_pca_in
 pca_show_fig = 'on'  # 'on' = run plt.show()
