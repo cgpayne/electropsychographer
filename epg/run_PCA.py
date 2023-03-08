@@ -8,7 +8,7 @@ DESCRIPTION
   this takes in the output from feature_gen.py and splits it into training and test data
     then runs a PCA on it
     thus reducing the 55k generated features from before to on the order of 10
-  data is taken in from c_epg.inter_dir and saved to c_epg.inter_dir
+  data is taken in from c_epg.fgen_dir and saved to a sub-directory of c_epg.inter_dir
 NOTES
   [none]
 RESOURCES
@@ -235,11 +235,11 @@ class DataEPG():
     def save(self, pca_mode: str) -> None:
         '''
         METHOD: save = save the y's and X's to csv
-           OUT: << csv's saved to c_epg.inter_dir >>
+           OUT: << csv's saved to a sub-directory of c_epg.inter_dir >>
           NOTE: must run set_HCSZ() before performing this method
         '''
         print("- saving y's and X's to csv")
-        out_dir = c_epg.inter_dir + '/' + cfg.pca_data_handle + '_' + pca_mode
+        out_dir = c_epg.fgen_dir + '/' + cfg.pca_data_handle + '_' + pca_mode
         ut.make_dir(out_dir)
         self.y_train.to_csv(out_dir + '/y_train_' + cfg.pca_data_handle + '.csv')
         self.y_test.to_csv(out_dir + '/y_test_' + cfg.pca_data_handle + '.csv')
@@ -266,7 +266,7 @@ if __name__ == '__main__':
     
     # load in the data
     print("- loading in the data")
-    X = pd.read_csv(c_epg.inter_dir + '/' + cfg.fname_pca_in, index_col='subject')
+    X = pd.read_csv(c_epg.fgen_dir + '/' + cfg.fname_removal_out, index_col='subject')
     # X = X.iloc[:, 25807:25840]  # testing for bad features (eg, 25807)
     print(X)
     
