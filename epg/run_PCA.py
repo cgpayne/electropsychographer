@@ -239,7 +239,7 @@ class DataEPG():
           NOTE: must run set_HCSZ() before performing this method
         '''
         print("- saving y's and X's to csv")
-        out_dir = c_epg.fgen_dir + '/' + cfg.pca_data_handle + '_' + pca_mode
+        out_dir = c_epg.inter_dir + '/' + pca_mode + '_' + cfg.pca_data_handle
         ut.make_dir(out_dir)
         self.y_train.to_csv(out_dir + '/y_train_' + cfg.pca_data_handle + '.csv')
         self.y_test.to_csv(out_dir + '/y_test_' + cfg.pca_data_handle + '.csv')
@@ -262,7 +262,7 @@ if __name__ == '__main__':
     t_zero = time.time()  # start the clock
     t_now = t_zero
     
-    print(f"- processing: {cfg.fname_pca_in}\n")
+    print(f"- processing: {cfg.fname_pca_in}, for {cfg.pca_data_handle}\n")
     
     # load in the data
     print("- loading in the data")
