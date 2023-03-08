@@ -28,6 +28,7 @@ meta_dir = os.getcwd() + '/' + data_dir + '/meta_archive'
 pruned_dir = os.getcwd() + '/' + data_dir + '/pruned'
 inter_dir = os.getcwd() + '/' + data_dir + '/intermediates'
 fig_dir = '../figures'
+fgen_dir = inter_dir + '/feature_gen'
 
 sample_count = 3072  # number of samples, see data/archive/time.csv
 fcol_labels = 'columnLabels.csv'

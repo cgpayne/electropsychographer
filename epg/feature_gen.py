@@ -10,7 +10,7 @@ DESCRIPTION
     time series using a package called ts-fresh
   there tends to be around 54,810 features generated, which are reduced via
     PCA in the script (run_PCA.py) following feature_gen_post.py
-  data is taken in from c_epg.pruned_dir, processed, and saved to c_epg.inter_dir
+  data is taken in from c_epg.pruned_dir, processed, and saved to c_epg.fgen_dir
 NOTES
   [none]
 RESOURCES
@@ -122,9 +122,9 @@ if __name__ == '__main__':
     
     # output to csv
     print("- saving to file")
-    ut.make_dir(c_epg.inter_dir)
+    ut.make_dir(c_epg.fgen_dir)
     df_extracted.index.name = 'subject'
-    df_extracted.to_csv(c_epg.inter_dir + '/' + cfg.fname_fgen)
+    df_extracted.to_csv(c_epg.fgen_dir + '/' + cfg.fname_fgen)
     t_now = ut.time_stamp(t_now, t_zero, 'feature generation, save')  # TIME STAMP
 
 

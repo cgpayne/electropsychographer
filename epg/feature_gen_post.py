@@ -7,7 +7,7 @@ feature_gen_post.py = do some post-processing on the results from feature_gen.py
 DESCRIPTION
   this code performs post-processing on the results from feature_gen.py
   the roughly 55,230 features generated are reduced via PCA in the following script: run_PCA.py
-  data is taken in from c_epg.inter_dir, processed, and saved to c_epg.inter_dir
+  data is taken in from c_epg.fgen_dir, processed, and saved to c_epg.fgen_dir
 NOTES
   [none]
 RESOURCES
@@ -42,7 +42,7 @@ if __name__ == '__main__':
     
     # load in the data
     print("- loading in the data")
-    df_extracted = pd.read_csv(c_epg.inter_dir + '/' + cfg.fname_fgen_post_in, index_col='subject')
+    df_extracted = pd.read_csv(c_epg.fgen_dir + '/' + cfg.fname_fgen_post_in, index_col='subject')
     
     # fill in empty values via imputation
     print("- imputing the data...")
@@ -81,8 +81,8 @@ if __name__ == '__main__':
     
     # output to csv
     print("- saving to file")
-    ut.make_dir(c_epg.inter_dir)
-    df_extracted.to_csv(c_epg.inter_dir + '/' + cfg.fname_fgen_post_out)
+    ut.make_dir(c_epg.fgen_dir)
+    df_extracted.to_csv(c_epg.fgen_dir + '/' + cfg.fname_fgen_post_out)
     t_now = ut.time_stamp(t_now, t_zero, 'check/remove all zeros, save')  # TIME STAMP
     
     
