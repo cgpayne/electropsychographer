@@ -74,17 +74,19 @@ class DataEPG():
     
     def print_Xy(self) -> None:
         '''
-        METHOD: print_Xy = print X_train, y_train, X_test, then y_test
+        METHOD: print_Xy = print X_train, X_test, y_train, then y_test
         '''
         print("\n  -- X_train =")
         print(self.X_train)
-        print("\n  -- y_train =")
-        print(self.y_train)
-        print('\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
         print("\n  -- X_test =")
         print(self.X_test)
+        print('\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+        print("\n  -- y_train =")
+        print(self.y_train)
+        print(f"#(0's) = {len([ii for ii in self.y_train if ii == 0])}, #(1's) = {len([ii for ii in self.y_train if ii == 1])}")
         print("\n  -- y_test =")
         print(self.y_test)
+        print(f"#(0's) = {len([ii for ii in self.y_test if ii == 0])}, #(1's) = {len([ii for ii in self.y_test if ii == 1])}")
     
     def print_X(self) -> None:
         '''
@@ -276,7 +278,8 @@ if __name__ == '__main__':
     all_subjects = {demo.loc[ii, 'subject']: demo.loc[ii, ' group'] for ii in range(len(demo))}
     print(f"  -- subjects (key) with respectives groups (value) = {all_subjects}")
     
-    y = pd.Series([all_subjects[X.index[ii]] for ii in range(len(X))], name='class')
+    # in line below: take math.floor(X.index[ii]) to account for duplicated rows (eg, 13,13.1,13.2,...) in oversampling manually
+    y = pd.Series([all_subjects[math.floor(X.index[ii])] for ii in range(len(X))], name='class')
     y.index = X.index
     print("\n  -- y =")
     print(y)
