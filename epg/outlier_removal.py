@@ -1,3 +1,25 @@
+#!/usr/bin/env python
+'''
+outlier_removal.py = remove outliers from the dataset
+  python3 outlier_removal.py
+  Copyright (c) 2022 Charlie Payne
+  Licence: GNU GPLv3
+DESCRIPTION
+  this code removes outliers from the post-processed results from feature_gen.py
+  data is taken in from c_epg.fgen_dir, processed, and saved to c_epg.fgen_dir
+    the output file should be tagged at the end with a "_outrmv.csv", or alike, in the user config
+NOTES
+  [none]
+RESOURCES
+  [none]
+CONVENTIONS
+  [none]
+KNOWN BUGS
+  [none]
+DESIRED FEATURES
+  [none]
+'''
+
 # external imports
 import time
 import math
@@ -11,6 +33,9 @@ import epglib.utils as ut
 
 
 class RemovalOutliers():
+    '''
+    CLASS: RemovalOutliers = holds the dataset and removes outliers from it
+    '''
     def __init__(self, df, std_cutoff, hit_frac):
         self.X = X
         self.std_cutoff = std_cutoff
@@ -19,6 +44,11 @@ class RemovalOutliers():
         print(f"  hit_num = {self.hit_num}")
     
     def find_outliers(self):
+        '''
+        METHOD: find_outliers = locate the outliers in the dataframe based on their z-scores
+                                if there at >= self.hit_num values in a row with >= self.cut_off standard deviation,
+                                  then this row is considered an outlier
+        '''
         # z-score the dataframe
         dfz = self.X.apply(zscore)
         self.X['hits'] = (dfz >= self.std_cutoff).sum(axis=1)
@@ -27,10 +57,16 @@ class RemovalOutliers():
         print(f"     we've found the outliers: {self.outliers}")
 
     def remove_outliers(self):
+        '''
+        METHOD: remove_outliers = remove the outliers from the dataframe
+        '''
         # keep the samples which are not outliers, hence self.X['hits'] >= self.hit_num is False
         self.X = self.X[self.X['hits'] < self.hit_num].drop(columns=['hits'])
     
     def save(self):
+        '''
+        METHOD: save = save the dataframe with outliers removed to csv
+        '''
         print("- saving X to csv")
         ut.make_dir(c_epg.fgen_dir)
         self.X.to_csv(c_epg.fgen_dir + '/' + cfg.fname_removal_out)
