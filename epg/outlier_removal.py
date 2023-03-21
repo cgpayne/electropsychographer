@@ -36,7 +36,7 @@ class RemovalOutliers():
     '''
     CLASS: RemovalOutliers = holds the dataset and removes outliers from it
     '''
-    def __init__(self, df, std_cutoff, hit_frac):
+    def __init__(self, df: pd.DataFrame, std_cutoff: float, hit_frac: float):
         self.X = X
         self.std_cutoff = std_cutoff
         self.hit_num = math.floor(hit_frac*self.X.shape[1])  # the total number of features outside std_cutoff to define an outlier
