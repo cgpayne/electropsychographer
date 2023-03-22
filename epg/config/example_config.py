@@ -101,7 +101,8 @@ hit_frac = 0.05  # >= this fraction of the features with standatd deviation >= s
 split_data_handle = 'cond1_oversampled_outrmv'
 fname_split_in = 'feature_gen_post_' + pca_data_handle + '.csv'
 
-k_folds = int(1/test_size_fgp)  # test_size = int(1/test_size_fgp), test_size_fgp corresponding to fname_split_in
+rand_mode = 'random'  # 'random' = use a random seed for splitting, 'off' = set random seed to 0
+Kfolds = int(1/test_size_fgp)  # test_size = int(1/test_size_fgp), test_size_fgp corresponding to fname_split_in
 
 
 # run_PCA.py

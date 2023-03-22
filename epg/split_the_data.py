@@ -1,5 +1,5 @@
 # external imports
-# import sys
+import sys
 import time
 import math
 import numpy as np
@@ -10,7 +10,7 @@ from sklearn.model_selection import train_test_split, StratifiedKFold
 import epglib.constants as c_epg
 from config import user_config as cfg
 import epglib.utils as ut
-from epglib.utils import eprint
+# from epglib.utils import eprint
 
 cv_mode = sys.argv[1]  # 'kfold' for K-fold CV, otherwise for standard train_test_split
 
@@ -78,3 +78,41 @@ class DataSplitter():
             self.y_test.to_csv(out_dir + '/y_test_' + cfg.split_data_handle + '.csv')
             np.savetxt(out_dir + '/X_train_' + cfg.split_data_handle + '.csv', self.X_train, delimiter=',')
             np.savetxt(out_dir + '/X_test_' + cfg.split_data_handle + '.csv', self.X_test, delimiter=',')
+
+
+if __name__ == '__main__':
+    t_zero = time.time()  # start the clock
+    t_now = t_zero
+    
+    print(f"- processing: {cfg.fname_split_in}")
+    print(f"  pca_split_handle = {cfg.pca_split_handle}")
+    print(f"  cv_mode = {cv_mode}\n")
+    
+    # load in the data
+    print("- loading in the data")
+    X = pd.read_csv(c_epg.fgen_dir + '/' + cfg.fname_split_in, index_col='subject')
+    # X = X.iloc[:, 25807:25840]  # testing for bad features (eg, 25807)
+    print(X)
+    
+    # create response vector
+    print("\n- generating response vector")
+    demo = pd.read_csv(c_epg.meta_dir + '/' + c_epg.fdemographic)
+    all_subjects = {demo.loc[ii, 'subject']: demo.loc[ii, ' group'] for ii in range(len(demo))}
+    print(f"  -- subjects (key) with respectives groups (value) = {all_subjects}")
+    
+    # in line below: take math.floor(X.index[ii]) to account for duplicated rows (eg, 13,13.1,13.2,...) in oversampling manually
+    y = pd.Series([all_subjects[math.floor(X.index[ii])] for ii in range(len(X))], name='class')
+    y.index = X.index
+    print("\n  -- y =")
+    print(y)
+    t_now = ut.time_stamp(t_now, t_zero, 'load + response')  # TIME STAMP
+    
+    # perform the splitting and save
+    ds = DataSplitter(X, y, cv_mode, cfg.rand_mode, cfg.Kfolds)
+    ds.perform_splitting()
+    t_now = ut.time_stamp(t_now, t_zero, 'splitting')  # TIME STAMP
+    ds.save()
+    t_now = ut.time_stamp(t_now, t_zero, 'save')  # TIME STAMP
+    
+
+    print('\n\nF- I-- N---')

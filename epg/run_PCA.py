@@ -264,7 +264,8 @@ if __name__ == '__main__':
     t_zero = time.time()  # start the clock
     t_now = t_zero
     
-    print(f"- processing: {cfg.fname_pca_in}, for {cfg.pca_data_handle}\n")
+    print(f"- processing: {cfg.fname_pca_in}")
+    print(f"  pca_data_handle = {cfg.pca_data_handle}\n")
     
     # load in the data
     print("- loading in the data")
