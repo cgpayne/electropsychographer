@@ -35,21 +35,22 @@ class DataSplitter():
         # dd = 74; X_train = X.drop(index=[dd]); X_test = X.loc[[dd]]; y_train = y.drop(index=[dd]); y_test = y.loc[[dd]]
     
     def _kfold_train_test_split(self, train: np.ndarray, test: np.ndarray):
+        # NOTE: StratifiedKFold() splits in terms of iloc indices
         X_train = self.X.iloc[train, :].values
         X_test = self.X.iloc[test, :].values
-        y_train = self.y[train].values
-        y_test = self.y[test].values
+        y_train = self.y.iloc[train]
+        y_test = self.y.iloc[test]
         return X_train, X_test, y_train, y_test
     
     def _kfold_split(self):
         if self.rand_mode == 'random':
-            skf = StratifiedKFold(n_splits=self.Kfolds, random_state=math.floor(time.time()))
+            skf = StratifiedKFold(n_splits=self.Kfolds, shuffle=True, random_state=math.floor(time.time()))
         else:
-            skf = StratifiedKFold(n_splits=self.Kfolds, random_state=0)
+            skf = StratifiedKFold(n_splits=self.Kfolds, shuffle=True, random_state=0)
         self.K_X_train = []
         self.K_X_test = []
-        self.K_train = []
-        self.K_test = []
+        self.K_y_train = []
+        self.K_y_test = []
         for train, test in skf.split(self.X, self.y):
             print(train, test)
             X_train, X_test, y_train, y_test = self._kfold_train_test_split(train, test)
@@ -89,8 +90,8 @@ if __name__ == '__main__':
     t_now = t_zero
     
     print(f"- processing: {cfg.fname_split_in}")
-    print(f"  pca_split_handle = {cfg.pca_split_handle}")
-    if cv_mode == 'kfolds':
+    print(f"  split_data_handle = {cfg.split_data_handle}")
+    if cv_mode == 'kfold':
         print(f"  Kfolds = {cfg.Kfolds}")
     else:
         print(f"  test_size = {cfg.test_size}")

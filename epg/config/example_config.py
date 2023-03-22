@@ -97,9 +97,9 @@ hit_frac = 0.05  # >= this fraction of the features with standatd deviation >= s
 # split_data_handle = 'cond1_pat59to74'
 # split_data_handle = 'cond1_pat1to81'
 # split_data_handle = 'cond1_oversampled'
-# split_data_handle = 'cond1_pat1to81_outrmv'
-split_data_handle = 'cond1_oversampled_outrmv'
-fname_split_in = 'feature_gen_post_' + pca_data_handle + '.csv'
+split_data_handle = 'cond1_pat1to81_outrmv'
+# split_data_handle = 'cond1_oversampled_outrmv'
+fname_split_in = 'feature_gen_post_' + split_data_handle + '.csv'
 
 rand_mode = 'random'  # 'random' = use a random seed for splitting, otherwise = set random seed to 0
 Kfolds = int(1/test_size_fgp)  # for cv_mode = 'kfolds': test_size = int(1/test_size_fgp), test_size_fgp corresponding to fname_split_in
