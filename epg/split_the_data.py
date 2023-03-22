@@ -26,17 +26,17 @@ class DataSplitter():
     def _standard_split(self):
         if self.rand_mode == 'random':
             self.X_train, self.X_test, self.y_train, self.y_test = \
-                train_test_split(X, y, test_size=cfg.test_size, random_state=math.floor(time.time()))
+                train_test_split(self.X, self.y, test_size=cfg.test_size, random_state=math.floor(time.time()))
         else:
             self.X_train, self.X_test, self.y_train, self.y_test = \
-                train_test_split(X, y, test_size=cfg.test_size, random_state=0)
+                train_test_split(self.X, self.y, test_size=cfg.test_size, random_state=0)
         # dd = 74; X_train = X.drop(index=[dd]); X_test = X.loc[[dd]]; y_train = y.drop(index=[dd]); y_test = y.loc[[dd]]
     
     def _kfold_train_test_split(self, train: np.ndarray, test: np.ndarray):
-        X_train = self.X.iloc[train, :]
-        X_test = self.X.iloc[test, :]
-        y_train = self.y[train]
-        y_test = self.y[test]
+        X_train = self.X.iloc[train, :].values
+        X_test = self.X.iloc[test, :].values
+        y_train = self.y[train].values
+        y_test = self.y[test].values
         return X_train, X_test, y_train, y_test
     
     def _kfold_split(self):
@@ -62,7 +62,19 @@ class DataSplitter():
             self._standard_split(self)
     
     def save(self):
+        print("- saving y's and X's to csv")
         if self.cv_mode == 'kfold':
-            asdf
+            out_dir = c_epg.split_dir + '/' + cfg.split_data_handle + '_kfold-' + str(self.Kfolds)
+            ut.make_dir(out_dir)
+            for ii in range(self.Kfolds):
+                self.K_y_train[ii].to_csv(out_dir + '/y_train-' + str(ii) + '_' + cfg.split_data_handle + '.csv')
+                self.K_y_test[ii].to_csv(out_dir + '/y_test-' + str(ii) + '_' + cfg.split_data_handle + '.csv')
+                np.savetxt(out_dir + '/X_train-' + str(ii) + '_' + cfg.split_data_handle + '.csv', self.K_X_train[ii], delimiter=',')
+                np.savetxt(out_dir + '/X_test-' + str(ii) + '_' + cfg.split_data_handle + '.csv', self.K_X_test[ii], delimiter=',')
         else:
-            # TODO need to make file names in config, etc
+            out_dir = c_epg.split_dir + '/' + cfg.split_data_handle + '_standard'
+            ut.make_dir(out_dir)
+            self.y_train.to_csv(out_dir + '/y_train_' + cfg.split_data_handle + '.csv')
+            self.y_test.to_csv(out_dir + '/y_test_' + cfg.split_data_handle + '.csv')
+            np.savetxt(out_dir + '/X_train_' + cfg.split_data_handle + '.csv', self.X_train, delimiter=',')
+            np.savetxt(out_dir + '/X_test_' + cfg.split_data_handle + '.csv', self.X_test, delimiter=',')

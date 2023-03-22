@@ -29,6 +29,7 @@ pruned_dir = os.getcwd() + '/' + data_dir + '/pruned'
 inter_dir = os.getcwd() + '/' + data_dir + '/intermediates'
 fig_dir = '../figures'
 fgen_dir = inter_dir + '/feature_gen'
+split_dir = inter_dir + '/data_splittings'
 
 sample_count = 3072  # number of samples, see data/archive/time.csv
 fcol_labels = 'columnLabels.csv'

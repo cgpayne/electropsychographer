@@ -84,10 +84,33 @@ fname_fgen_post_in = 'feature_gen_cond1_pat1to81.csv'  # no 'post' in name
 fname_fgen_post_out = 'feature_gen_post_cond1_pat1to81.csv'  # includes 'post' in name
 
 
+# outlier_removal.py
+
+fname_removal_in = 'feature_gen_post_cond1_pat1to81.csv'
+fname_removal_out = 'feature_gen_post_cond1_pat1to81_outrmv.csv'
+std_cutoff = 3  # remove all samples with a feature standard deviation >= std_cutoff
+hit_frac = 0.05  # >= this fraction of the features with standatd deviation >= std_cutoff defines an outlier
+
+
+# split_the_data.py
+
+# split_data_handle = 'cond1_pat59to74'
+# split_data_handle = 'cond1_pat1to81'
+# split_data_handle = 'cond1_oversampled'
+# split_data_handle = 'cond1_pat1to81_outrmv'
+split_data_handle = 'cond1_oversampled_outrmv'
+fname_split_in = 'feature_gen_post_' + pca_data_handle + '.csv'
+
+k_folds = int(1/test_size_fgp)  # test_size = int(1/test_size_fgp), test_size_fgp corresponding to fname_split_in
+
+
 # run_PCA.py
 
 # pca_data_handle = 'cond1_pat59to74'
-pca_data_handle = 'cond1_pat1to81'
+# pca_data_handle = 'cond1_pat1to81'
+# pca_data_handle = 'cond1_oversampled'
+# pca_data_handle = 'cond1_pat1to81_outrmv'
+pca_data_handle = 'cond1_oversampled_outrmv'
 fname_pca_in = 'feature_gen_post_' + pca_data_handle + '.csv'
-test_size = test_size_fgp  # test_size should be equal to the test_size_fgp corresponding to fname_pca_in
+
 pca_show_fig = 'on'  # 'on' = run plt.show()
