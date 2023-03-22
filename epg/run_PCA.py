@@ -41,7 +41,7 @@ from config import user_config as cfg
 import epglib.utils as ut
 from epglib.utils import eprint
 
-pca_mode = sys.argv[1]  # 'pca' for regular PCA, 'kpca' for KernelPCA
+pca_mode = sys.argv[1]  # 'pca' = for regular PCA, 'kpca' = for KernelPCA
 
 
 class DataEPG():

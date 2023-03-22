@@ -1,3 +1,5 @@
+# Kfolds are split equally
+
 # external imports
 import sys
 import time
@@ -12,7 +14,7 @@ from config import user_config as cfg
 import epglib.utils as ut
 # from epglib.utils import eprint
 
-cv_mode = sys.argv[1]  # 'kfold' for K-fold CV, otherwise for standard train_test_split
+cv_mode = sys.argv[1]  # 'kfold' = for K-fold CV, otherwise = for standard train_test_split
 
 
 class DataSplitter():
@@ -49,7 +51,8 @@ class DataSplitter():
         self.K_train = []
         self.K_test = []
         for train, test in skf.split(self.X, self.y):
-            X_train, X_test, y_train, y_test = self._kfold_train_test_split(self, train, test)
+            print(train, test)
+            X_train, X_test, y_train, y_test = self._kfold_train_test_split(train, test)
             self.K_X_train.append(X_train)
             self.K_X_test.append(X_test)
             self.K_y_train.append(y_train)
@@ -57,9 +60,9 @@ class DataSplitter():
     
     def perform_splitting(self):
         if self.cv_mode == 'kfold':
-            self._kfold_split(self)
+            self._kfold_split()
         else:
-            self._standard_split(self)
+            self._standard_split()
     
     def save(self):
         print("- saving y's and X's to csv")
@@ -67,6 +70,7 @@ class DataSplitter():
             out_dir = c_epg.split_dir + '/' + cfg.split_data_handle + '_kfold-' + str(self.Kfolds)
             ut.make_dir(out_dir)
             for ii in range(self.Kfolds):
+                print(f"  -- saving fold {ii}")
                 self.K_y_train[ii].to_csv(out_dir + '/y_train-' + str(ii) + '_' + cfg.split_data_handle + '.csv')
                 self.K_y_test[ii].to_csv(out_dir + '/y_test-' + str(ii) + '_' + cfg.split_data_handle + '.csv')
                 np.savetxt(out_dir + '/X_train-' + str(ii) + '_' + cfg.split_data_handle + '.csv', self.K_X_train[ii], delimiter=',')
@@ -86,6 +90,10 @@ if __name__ == '__main__':
     
     print(f"- processing: {cfg.fname_split_in}")
     print(f"  pca_split_handle = {cfg.pca_split_handle}")
+    if cv_mode == 'kfolds':
+        print(f"  Kfolds = {cfg.Kfolds}")
+    else:
+        print(f"  test_size = {cfg.test_size}")
     print(f"  cv_mode = {cv_mode}\n")
     
     # load in the data
