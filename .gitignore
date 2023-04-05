@@ -1,5 +1,6 @@
 # general ignores
 user_config.py
+run_PCA_exec.sh
 **/__pycache__/*
 **/logging/*
 

@@ -52,10 +52,10 @@ class DataEPG():
     # CONSTRUCTOR
     def __init__(self, X_train: np.ndarray, X_test: np.ndarray, y_train: pd.DataFrame, y_test: pd.DataFrame) -> None:
         # do some book keeping
-        y_train_count0 = len([sub for sub in y_train if sub == 0])
-        y_train_count1 = len(y_train) - y_train_count0
-        y_test_count0 = len([sub for sub in y_test if sub == 0])
-        y_test_count1 = len(y_test) - y_test_count0
+        y_train_count0 = len([sub for sub in y_train['class'] if sub == 0])
+        y_train_count1 = len(y_train['class']) - y_train_count0
+        y_test_count0 = len([sub for sub in y_test['class'] if sub == 0])
+        y_test_count1 = len(y_test['class']) - y_test_count0
         print("- some book keepting:")
         print(f"  -- y_train has {y_train_count1} / {y_train_count0} = {y_train_count1/y_train_count0:.2f}x 1's to 0's")
         print(f"     y_test has {y_test_count1} / {y_test_count0} = {y_test_count1/y_test_count0:.2f}x 1's to 0's")
@@ -78,10 +78,10 @@ class DataEPG():
         print('\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
         print("\n  -- y_train =")
         print(self.y_train)
-        print(f"#(0's) = {len([ii for ii in self.y_train if ii == 0])}, #(1's) = {len([ii for ii in self.y_train if ii == 1])}")
+        print(f"#(0's) = {len([ii for ii in self.y_train['class'] if ii == 0])}, #(1's) = {len([ii for ii in self.y_train['class'] if ii == 1])}")
         print("\n  -- y_test =")
         print(self.y_test)
-        print(f"#(0's) = {len([ii for ii in self.y_test if ii == 0])}, #(1's) = {len([ii for ii in self.y_test if ii == 1])}")
+        print(f"#(0's) = {len([ii for ii in self.y_test['class'] if ii == 0])}, #(1's) = {len([ii for ii in self.y_test['class'] if ii == 1])}")
     
     def print_X(self) -> None:
         '''
@@ -177,17 +177,17 @@ class DataEPG():
         
         # add in the training data
         for ii in range(len(self.y_train)):
-            if self.y_train.iloc[ii] == 0:
+            if self.y_train.loc[ii, 'class'] == 0:
                 self.X_HC = np.append(self.X_HC, [self.X_train[ii, :]], axis=0)
-            elif self.y_train.iloc[ii] == 1:
+            elif self.y_train.loc[ii, 'class'] == 1:
                 self.X_SZ = np.append(self.X_SZ, [self.X_train[ii, :]], axis=0)
         
         # add in the test data
         # for ii in [2]:
         for ii in range(len(self.y_test)):
-            if self.y_test.iloc[ii] == 0:
+            if self.y_test.loc[ii, 'class'] == 0:
                 self.X_HC = np.append(self.X_HC, [self.X_test[ii, :]], axis=0)
-            elif self.y_test.iloc[ii] == 1:
+            elif self.y_test.loc[ii, 'class'] == 1:
                 self.X_SZ = np.append(self.X_SZ, [self.X_test[ii, :]], axis=0)
     
     def plot_PC(self, pca_mode: str, fig_dir_now: str) -> None:
@@ -287,8 +287,8 @@ if __name__ == '__main__':
     print("- loading in the data")
     X_train = np.loadtxt(fX_train, delimiter=',')
     X_test = np.loadtxt(fX_train, delimiter=',')
-    y_train = pd.read_csv(fy_train, index_col='subject')
-    y_test = pd.read_csv(fy_test, index_col='subject')
+    y_train = pd.read_csv(fy_train)
+    y_test = pd.read_csv(fy_test)
     
     ## build the model
     epg = DataEPG(X_train, X_test, y_train, y_test)
