@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 '''
 run_PCA.py = run the Principal Component Analysis (PCA)
-  python3 run_PCA.py <pca_mode> <pca_data_handle> <kfold_num>
+  python3 run_PCA.py <pca_mode> <pca_data_handle> <kfold_num> <pca_show_fig>
   Copyright (c) 2022 Charlie Payne
   Licence: GNU GPLv3
 DESCRIPTION
@@ -35,13 +35,14 @@ from sklearn.decomposition import KernelPCA
 
 # internal imports
 import epglib.constants as c_epg
-from config import user_config as cfg
+# from config import user_config as cfg
 import epglib.utils as ut
 from epglib.utils import eprint
 
 pca_mode = sys.argv[1]  # 'pca' = for regular PCA, 'kpca' = for KernelPCA
 pca_data_handle = sys.argv[2]  # eg, 'cond1_pat1to81_outrmv'
 folding_num = sys.argv[3]  # the "folding" to run (eg, 0 -> folding with fold=0 as test and training as otherwise), use a any value for standard splitting
+pca_show_fig = sys.argv[4]  # 'on' = run plt.show()
 
 
 class DataEPG():
@@ -147,7 +148,7 @@ class DataEPG():
         plt.ylabel('percent explained')
         plt.xticks([ii for ii in range(1, self.num_components+1)])
         plt.savefig(fig_dir_now + '/explained_variance.pdf')
-        if cfg.pca_show_fig == 'on':
+        if pca_show_fig == 'on':
             plt.show()
     
     def plot_cev(self, fig_dir_now: str) -> None:
@@ -164,7 +165,7 @@ class DataEPG():
         plt.ylabel('percent explained')
         plt.xticks([ii for ii in range(1, self.num_components+1)])
         plt.savefig(fig_dir_now + '/cummulative_explained_variance.pdf')
-        if cfg.pca_show_fig == 'on':
+        if pca_show_fig == 'on':
             plt.show()
     
     def set_HCSZ(self) -> None:
@@ -210,7 +211,7 @@ class DataEPG():
             plt.xlabel("PC1")
             plt.ylabel("PC2")
         plt.savefig(fig_dir_now + '/PC1_vs_PC2.pdf')
-        if cfg.pca_show_fig == 'on':
+        if pca_show_fig == 'on':
             plt.show()
         
         print("    --- ...PC2 vs PC3...")
@@ -226,7 +227,7 @@ class DataEPG():
             plt.ylabel("PC3")
         plt.legend()
         plt.savefig(fig_dir_now + '/PC2_vs_PC3.pdf')
-        if cfg.pca_show_fig == 'on':
+        if pca_show_fig == 'on':
             plt.show()
     
     def save(self, pca_mode: str, folding_num: int, cv_mode: str) -> None:
@@ -305,7 +306,7 @@ if __name__ == '__main__':
     epg.print_X()
     t_now = ut.time_stamp(t_now, t_zero, 'PCA')  # TIME STAMP
     
-    fig_dir_now = c_epg.fig_dir + '/' + cfg.pca_data_handle
+    fig_dir_now = c_epg.fig_dir + '/' + pca_data_handle + '/' + str(folding_num)
     if pca_mode == 'pca':
         # plot the explained variance
         epg.set_ev()
