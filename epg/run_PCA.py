@@ -273,19 +273,6 @@ if __name__ == '__main__':
     # X = X.iloc[:, 25807:25840]  # testing for bad features (eg, 25807)
     print(X)
     
-    # create response vector
-    print("\n- generating response vector")
-    demo = pd.read_csv(c_epg.meta_dir + '/' + c_epg.fdemographic)
-    all_subjects = {demo.loc[ii, 'subject']: demo.loc[ii, ' group'] for ii in range(len(demo))}
-    print(f"  -- subjects (key) with respectives groups (value) = {all_subjects}")
-    
-    # in line below: take math.floor(X.index[ii]) to account for duplicated rows (eg, 13,13.1,13.2,...) in oversampling manually
-    y = pd.Series([all_subjects[math.floor(X.index[ii])] for ii in range(len(X))], name='class')
-    y.index = X.index
-    print("\n  -- y =")
-    print(y)
-    t_now = ut.time_stamp(t_now, t_zero, 'load + response')  # TIME STAMP
-    
     ## build the model
     epg = DataEPG(X, y)
     epg.print_Xy()
