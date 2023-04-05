@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 '''
 run_PCA.py = run the Principal Component Analysis (PCA)
-  python3 run_PCA.py <pca_mode>
+  python3 run_PCA.py <pca_mode> <pca_data_handle> <kfold_num>
   Copyright (c) 2022 Charlie Payne
   Licence: GNU GPLv3
 DESCRIPTION
@@ -26,11 +26,9 @@ DESIRED FEATURES
 # external imports
 import sys
 import time
-import math
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 from sklearn.decomposition import KernelPCA
@@ -42,6 +40,8 @@ import epglib.utils as ut
 from epglib.utils import eprint
 
 pca_mode = sys.argv[1]  # 'pca' = for regular PCA, 'kpca' = for KernelPCA
+pca_data_handle = sys.argv[2]  # eg, 'cond1_pat1to81_outrmv'
+folding_num = sys.argv[3]  # the "folding" to run (eg, 0 -> folding with fold=0 as test and training as otherwise), use a any value for standard splitting
 
 
 class DataEPG():
@@ -50,18 +50,13 @@ class DataEPG():
            methods are listed in order of operation
     '''
     # CONSTRUCTOR
-    def __init__(self, X: pd.DataFrame, y: pd.Series) -> None:
-        # split the data: training, testing
-        print("- split the dataset into training data and test data")
-        # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=cfg.test_size, random_state=0)
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=cfg.test_size, random_state=math.floor(time.time()))
-        # dd = 74; X_train = X.drop(index=[dd]); X_test = X.loc[[dd]]; y_train = y.drop(index=[dd]); y_test = y.loc[[dd]]
-        
+    def __init__(self, X_train: np.ndarray, X_test: np.ndarray, y_train: pd.DataFrame, y_test: pd.DataFrame) -> None:
         # do some book keeping
         y_train_count0 = len([sub for sub in y_train if sub == 0])
         y_train_count1 = len(y_train) - y_train_count0
         y_test_count0 = len([sub for sub in y_test if sub == 0])
         y_test_count1 = len(y_test) - y_test_count0
+        print("- some book keepting:")
         print(f"  -- y_train has {y_train_count1} / {y_train_count0} = {y_train_count1/y_train_count0:.2f}x 1's to 0's")
         print(f"     y_test has {y_test_count1} / {y_test_count0} = {y_test_count1/y_test_count0:.2f}x 1's to 0's")
         print(f"     compared to 49 / 32 = {49/32:.2f}x 1's (SZ) to 0's (HC) in the full dataset")
@@ -234,21 +229,25 @@ class DataEPG():
         if cfg.pca_show_fig == 'on':
             plt.show()
     
-    def save(self, pca_mode: str) -> None:
+    def save(self, pca_mode: str, folding_num: int, cv_mode: str) -> None:
         '''
-        METHOD: save = save the y's and X's to csv
+        METHOD: save = save the X's and y's to csv
            OUT: << csv's saved to a sub-directory of c_epg.inter_dir >>
           NOTE: must run set_HCSZ() before performing this method
         '''
-        print("- saving y's and X's to csv")
-        out_dir = c_epg.inter_dir + '/' + pca_mode + '_' + cfg.pca_data_handle
+        print("- saving X's and y's to csv")
+        out_dir = c_epg.inter_dir + '/' + pca_mode + '/' + pca_data_handle
         ut.make_dir(out_dir)
-        self.y_train.to_csv(out_dir + '/y_train_' + cfg.pca_data_handle + '.csv')
-        self.y_test.to_csv(out_dir + '/y_test_' + cfg.pca_data_handle + '.csv')
-        np.savetxt(out_dir + '/X_train_' + cfg.pca_data_handle + '.csv', self.X_train, delimiter=',')
-        np.savetxt(out_dir + '/X_test_' + cfg.pca_data_handle + '.csv', self.X_test, delimiter=',')
-        np.savetxt(out_dir + '/X_HC_' + cfg.pca_data_handle + '.csv', self.X_HC, delimiter=',')
-        np.savetxt(out_dir + '/X_SZ_' + cfg.pca_data_handle + '.csv', self.X_SZ, delimiter=',')
+        if cv_mode == 'kfold':
+            the_folding = '-' + folding_num
+        else:
+            the_folding = ''
+        self.y_train.to_csv(out_dir + '/y_train' + the_folding + '_' + pca_data_handle + '.csv')
+        self.y_test.to_csv(out_dir + '/y_test' + the_folding + '_' + pca_data_handle + '.csv')
+        np.savetxt(out_dir + '/X_train' + the_folding + '_' + pca_data_handle + '.csv', self.X_train, delimiter=',')
+        np.savetxt(out_dir + '/X_test' + the_folding + '_' + pca_data_handle + '.csv', self.X_test, delimiter=',')
+        np.savetxt(out_dir + '/X_HC' + the_folding + '_' + pca_data_handle + '.csv', self.X_HC, delimiter=',')
+        np.savetxt(out_dir + '/X_SZ' + the_folding + '_' + pca_data_handle + '.csv', self.X_SZ, delimiter=',')
 
 
 if __name__ == '__main__':
@@ -259,22 +258,40 @@ if __name__ == '__main__':
         eprint("valid options are: 'pca', 'kpca'")
         eprint("exiting...")
         sys.exit(1)
+    if 'kfold' in pca_data_handle.split('_')[-1]:
+        cv_mode = 'kfold'
+    elif 'standard' in pca_data_handle.split('_')[-1]:
+        cv_mode = 'standard'
+    else:
+        eprint("ERROR 180: invalid pca_data_handle!")
+        eprint(f"pca_data_handle = {pca_data_handle}")
+        eprint("it must be of the form *_standard or *_kfold-*")
+        eprint("exiting...")
+        sys.exit(1)
     
     ## set up for the PCA
     t_zero = time.time()  # start the clock
     t_now = t_zero
     
-    print(f"- processing: {cfg.fname_pca_in}")
-    print(f"  pca_data_handle = {cfg.pca_data_handle}\n")
+    print(f"- processing: pca_data_handle = {pca_data_handle}\n")
     
     # load in the data
+    if cv_mode == 'kfold':
+        data_sub_dir = c_epg.split_dir + '/' + pca_data_handle
+        fend = folding_num + '_' + pca_data_handle.split('_kfold')[0] + '.csv'
+        fX_train = data_sub_dir + '/X_train-' + fend
+        fX_test = data_sub_dir + '/X_test-' + fend
+        fy_train = data_sub_dir + '/y_train-' + fend
+        fy_test = data_sub_dir + '/y_test-' + fend
+    
     print("- loading in the data")
-    X = pd.read_csv(c_epg.fgen_dir + '/' + cfg.fname_removal_out, index_col='subject')
-    # X = X.iloc[:, 25807:25840]  # testing for bad features (eg, 25807)
-    print(X)
+    X_train = np.loadtxt(fX_train, delimiter=',')
+    X_test = np.loadtxt(fX_train, delimiter=',')
+    y_train = pd.read_csv(fy_train, index_col='subject')
+    y_test = pd.read_csv(fy_test, index_col='subject')
     
     ## build the model
-    epg = DataEPG(X, y)
+    epg = DataEPG(X_train, X_test, y_train, y_test)
     epg.print_Xy()
     t_now = ut.time_stamp(t_now, t_zero, 'train/test split')  # TIME STAMP
     
@@ -311,7 +328,7 @@ if __name__ == '__main__':
     t_now = ut.time_stamp(t_now, t_zero, 'plotting')  # TIME STAMP
     
     # save to file
-    epg.save(pca_mode)
+    epg.save(pca_mode, folding_num, cv_mode)
     t_now = ut.time_stamp(t_now, t_zero, 'save')  # TIME STAMP
     
     
