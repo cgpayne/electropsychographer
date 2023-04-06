@@ -10,6 +10,7 @@ DESCRIPTION
     otherwise, we simply use train_test_split() as a "standard" splitting
   note that each k-fold is split into equal sizes, ie, 5-fold gives 20%, 20%, 20%, 20%, 20% from random slots
     for a splitting, one of those folds is used as a test and the rest combines into the training, and so on
+    also, StratifiedKFold() does not use oversampling or alike, but it keeps things balanced
   data is taken in from c_epg.fgen_dir, processed, and saved to c_epg.split_dir
 NOTES
   [none]

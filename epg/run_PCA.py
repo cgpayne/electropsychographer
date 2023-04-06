@@ -274,7 +274,8 @@ if __name__ == '__main__':
     t_zero = time.time()  # start the clock
     t_now = t_zero
     
-    print(f"- processing: pca_data_handle = {pca_data_handle}\n")
+    print(f"- processing: pca_data_handle = {pca_data_handle}")
+    print(f"              folding_num = {folding_num}\n")
     
     # load in the data
     if cv_mode == 'kfold':
