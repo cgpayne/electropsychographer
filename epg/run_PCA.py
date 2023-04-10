@@ -278,17 +278,22 @@ if __name__ == '__main__':
     print(f"              folding_num = {folding_num}\n")
     
     # load in the data
+    data_sub_dir = c_epg.split_dir + '/' + pca_data_handle
     if cv_mode == 'kfold':
-        data_sub_dir = c_epg.split_dir + '/' + pca_data_handle
         fend = folding_num + '_' + pca_data_handle.split('_kfold')[0] + '.csv'
         fX_train = data_sub_dir + '/X_train-' + fend
         fX_test = data_sub_dir + '/X_test-' + fend
         fy_train = data_sub_dir + '/y_train-' + fend
         fy_test = data_sub_dir + '/y_test-' + fend
+    else:
+        fX_train = data_sub_dir + '/X_train_' + pca_data_handle + '.csv'
+        fX_test = data_sub_dir + '/X_test_' + pca_data_handle + '.csv'
+        fy_train = data_sub_dir + '/y_train_' + pca_data_handle + '.csv'
+        fy_test = data_sub_dir + '/y_test_' + pca_data_handle + '.csv'
     
     print("- loading in the data")
     X_train = np.loadtxt(fX_train, delimiter=',')
-    X_test = np.loadtxt(fX_train, delimiter=',')
+    X_test = np.loadtxt(fX_test, delimiter=',')
     y_train = pd.read_csv(fy_train)
     y_test = pd.read_csv(fy_test)
     
