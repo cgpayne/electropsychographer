@@ -46,7 +46,7 @@ patients_dp = {
 
 # feature_gen.py
 
-selected_condition = 1  # experimental modes, see data/my_meta.txt
+selected_condition = 3  # experimental modes, see data/my_meta.txt
 
 # ComprehensiveFCParameters:
 # patients_fg = [1, 2]  # 0:16:35, 55230 features, 1943 features with all zeros
@@ -80,14 +80,24 @@ test_size_fgp = 0.2  # ratio of test data to full dataset (see test_size)
 # fname_fgen_post_out = 'feature_gen_post_cond1_pat1-2-67-69.csv'  # includes 'post' in name
 # fname_fgen_post_in = 'feature_gen_cond1_pat59to74.csv'  # no 'post' in name
 # fname_fgen_post_out = 'feature_gen_post_cond1_pat59to74.csv'  # includes 'post' in name
-fname_fgen_post_in = 'feature_gen_cond1_pat1to81.csv'  # no 'post' in name
-fname_fgen_post_out = 'feature_gen_post_cond1_pat1to81.csv'  # includes 'post' in name
+# fname_fgen_post_in = 'feature_gen_cond1_pat1to81.csv'  # no 'post' in name
+# fname_fgen_post_out = 'feature_gen_post_cond1_pat1to81.csv'  # includes 'post' in name
+
+# fname_fgen_post_in = 'feature_gen_cond2_pat1to81.csv'  # no 'post' in name
+# fname_fgen_post_out = 'feature_gen_post_cond2_pat1to81.csv'  # includes 'post' in name
+
+fname_fgen_post_in = 'feature_gen_cond3_pat1to81.csv'  # no 'post' in name
+fname_fgen_post_out = 'feature_gen_post_cond3_pat1to81.csv'  # includes 'post' in name
 
 
 # outlier_removal.py
 
-fname_removal_in = 'feature_gen_post_cond1_pat1to81.csv'
-fname_removal_out = 'feature_gen_post_cond1_pat1to81_outrmv.csv'
+# fname_removal_in = 'feature_gen_post_cond1_pat1to81.csv'
+# fname_removal_out = 'feature_gen_post_cond1_pat1to81_outrmv.csv'
+# fname_removal_in = 'feature_gen_post_cond2_pat1to81.csv'
+# fname_removal_out = 'feature_gen_post_cond2_pat1to81_outrmv.csv'
+fname_removal_in = 'feature_gen_post_cond3_pat1to81.csv'
+fname_removal_out = 'feature_gen_post_cond3_pat1to81_outrmv.csv'
 std_cutoff = 3  # remove all samples with a feature standard deviation >= std_cutoff
 hit_frac = 0.05  # >= this fraction of the features with standatd deviation >= std_cutoff defines an outlier
 
@@ -97,8 +107,10 @@ hit_frac = 0.05  # >= this fraction of the features with standatd deviation >= s
 # split_data_handle = 'cond1_pat59to74'
 # split_data_handle = 'cond1_pat1to81'
 # split_data_handle = 'cond1_oversampled'
-split_data_handle = 'cond1_pat1to81_outrmv'
 # split_data_handle = 'cond1_oversampled_outrmv'
+# split_data_handle = 'cond1_pat1to81_outrmv'
+# split_data_handle = 'cond2_pat1to81_outrmv'
+split_data_handle = 'cond3_pat1to81_outrmv'
 fname_split_in = 'feature_gen_post_' + split_data_handle + '.csv'
 
 rand_mode = 'random'  # 'random' = use a random seed for splitting, otherwise = set random seed to 0

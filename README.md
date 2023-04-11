@@ -99,13 +99,14 @@ To reduce the ~$10^4$ features generated from the time series to a more computat
 where the `pca` can be changed with `kpca` for a Kernel-PCA, the `cond1_pat1to81_outrmv_kfold-5` can be any generic data handle which matches your naming scheme, `0` refers to the fold number, and `on` runs with the plots displayed during runtime. To run many folds, one can use a bash script such as:
 
 ```
-pca_show_fig=${1}
+cond_num=${1}
+pca_show_fig=${2}
 
-python run_PCA.py pca cond1_pat1to81_outrmv_kfold-5 0 $pca_show_fig
-python run_PCA.py pca cond1_pat1to81_outrmv_kfold-5 1 $pca_show_fig
-python run_PCA.py pca cond1_pat1to81_outrmv_kfold-5 2 $pca_show_fig
-python run_PCA.py pca cond1_pat1to81_outrmv_kfold-5 3 $pca_show_fig
-python run_PCA.py pca cond1_pat1to81_outrmv_kfold-5 4 $pca_show_fig
+python run_PCA.py pca cond${cond_num}_pat1to81_outrmv_kfold-5 0 $pca_show_fig
+python run_PCA.py pca cond${cond_num}_pat1to81_outrmv_kfold-5 1 $pca_show_fig
+python run_PCA.py pca cond${cond_num}_pat1to81_outrmv_kfold-5 2 $pca_show_fig
+python run_PCA.py pca cond${cond_num}_pat1to81_outrmv_kfold-5 3 $pca_show_fig
+python run_PCA.py pca cond${cond_num}_pat1to81_outrmv_kfold-5 4 $pca_show_fig
 ```
 
 Note that I also ran for a Kernel-PCA, which gave similar results for this dataset.
