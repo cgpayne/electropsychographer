@@ -20,7 +20,15 @@ Here, I propose that an EEG reading provides enough information to predict wheth
 
 # Data <a id="data"></a>
 
-[insert: study, outline with links to Kaggle; condition, trial, time-points]
+We retrieved data from a [study](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4059422/) of health controls (HC) versus patients with schizophrenia (SZ), from a dataset in two parts on Kaggle [here](https://www.kaggle.com/datasets/broach/button-tone-sz?resource=download) and [here](https://www.kaggle.com/datasets/broach/buttontonesz2). There were 32 HC's and 49 SZ's, for a total of 81 samples.
+
+In this study, it is described that HC's have a mechanism in the brain which represses neural activity from expected or internal stimuli. For instance, if one pushes a button that emits a tone, and that tone is expected by the brain, the brain will suppress neural activity associated with the auditory stimulus of the tone. This allows for more efficient functioning in the sensory cortex. However, patients that have schizophrenia are known to have less suppression of this neural activity, which signifies a difference in processing external and internal stimuli.
+
+It is posited that this dysfunction in neural suppression contributes to the experience of sensory hallucinations in patients with schizophrenia. Furthermore, the authors expect that one can characterize this neural activity on an EEG reading through 70 nodes on the patient's head which read the electrical activity of the brain.
+
+I therefore asked the question: **is there enough of a signature in these EEG readings to distinguish between a healthy control and a patient with schizophrenia?** If so, can a machine learning model be trained on this difference, and then predict whether or not a new patient has schizophrenia based on their EEG? A model like this could be a major tool to psychiatrists as a physiological test (of which none currently exists) for schizophrenia.
+
+In the study, a button was repeatedly pressed which emitted a tone and the EEG read the brain's electrical activity as it reacted to the stimulus of the noise. In a HC, as the button is pressed in succession, the brain should expect the tone and suppress the related neural activity, whereas a SZ will not. There were three conditions tested: the button press with a subsequent tone, the button press without a tone (silence), and simply a played tone without a button press involved. Each condition had an intended 100 trials (ie, 100 presses/tones), and each trial had 3072 time points measured on the EEG, which gives us a time series for each of the 70 nodes on the head. We chose to train on each condition separately to see which one had the best signature.
 
 # Code
 
@@ -44,7 +52,7 @@ Note that `example_config.py` is tracked by git, whereas `user_config.py` is not
 
 I will now describe the individual scripts, their purpose, and how to run them. Each script can be found under the `epg/` directory, and they all make use of the `user_config.py`.
 
-###### 1 - Data Pruning
+###### 1 - Data Pruning <a id="data-pruning"></a>
 
 To reduce computational load, I work on only one trial out of the 100 trials per patient per condition. I assume that that later trials (which each represent a time series) will have the bigger difference in signature, since that's when the brain will be best trained against the tone in the button test. That is, patients without schizophrenia will now have a suppression of the neural activity from the predicted sound, whereas those with schizophrenia will not, in theory. So, I prune out the latest trial possible, where all three conditions are present, per patient. This restriction typically happens at trial 90, but sometimes lower or higher, but (for unexplained reasons) never at the final trial (ie, 100). I found the respective trials manually.
 
@@ -72,7 +80,7 @@ There are many features which have all zeros exactly and also approximately (see
 
 [insert: describe after updating the method]
 
-###### 4 - Split the Data for K-fold CV
+###### 4 - Split the Data for Stratified K-fold CV
 
 I now split the data into the desired number of folds for cross validation (or into a single standard test/training split if desired) using the `epg/split_the_data.py` script. I choose a stratified K-fold cross validation to retain the class imbalance present between the 32 health controls to 49 schizophrenia patients.
 
@@ -82,9 +90,9 @@ Set the `user_config.py` parameters (make sure the `Kfolds` parameter matches wi
 
 Note that you may use any other string in place of `kfold` to run a standard `test_train_split` as compared to the `StratifiedKFold` (both from `sklearn.model_selection`). The data is taken from the `fgen_dir`, processed, then saved to the `split_dir` (see the `epg/epglib/constants.py` file) in form `X_train-*_<data_handle>.csv`, where the `*` wildcard refers to the fold number and the `<data_hanlde>` is set in the `user_config.py`.
 
-###### 5 - PCA
+###### 5 - PCA <a id="PCA"></a>
 
-To reduce the $~10^4$ features generated from the time series to a more computationally efficient dimensionality, I use Principal Component Analysis (PCA). This will pay off when running models like random forest and alike, but I must make sure I capture enough of the data's variance in a reasonable amount of principal components. To see the typical results of this PCA, refer to [Model and Results](#model-and-results) - I can reduce the dimension to $~10$. To run, try:
+To reduce the ~$10^4$ features generated from the time series to a more computationally efficient dimensionality, I use Principal Component Analysis (PCA). This will pay off when running models like random forest and alike, but I must make sure I capture enough of the data's variance in a reasonable amount of principal components. To see the typical results of this PCA, refer to [Model and Results](#model-and-results) - I can reduce the dimension to ~$10$. To run, try:
 
 `python run_PCA.py pca cond1_pat1to81_outrmv_kfold-5 0 on`
 
@@ -104,11 +112,24 @@ Note that I also ran for a Kernel-PCA, which gave similar results for this datas
 
 ### Notebook Phase
 
-[insert: stuff]
+This is where the machine learning models are built and run. For a random forest using a stratified K-fold cross validation see the `random_forest_all.ipynb` notebook. In order to execute this notebook, all the data must be processed from [Stage 1](#data-pruning) through to [Stage 5](#PCA) in the *script phase* of the codebase. For the results from this notebook, see the [Model and Results](#model-and-results) section.
+
+[insert: more]
 
 ### Running the Code - Summary
 
-[insert: description]
+To run the code from start to finish, use submissions like:
+
+```
+python data_pruning.py
+python feature_gen.py
+python feature_gen_post.py
+python outlier_removal.py
+python split_the_data.py kfold
+python run_PCA.py pca cond1_pat1to81_outrmv_kfold-5 0 on
+```
+
+making sure to set the `user_config.py` parameters before each submission. Then execute through the cells of the `notebooks/models/random_forest_all.py` Jupyter notebook.
 
 # Model and Results <a id="model-and-results"></a>
 

@@ -102,7 +102,8 @@ if __name__ == '__main__':
     t_zero = time.time()  # start the clock
     t_now = t_zero
     
-    print(f"- running for patients: {list(cfg.patients_fg)}\n")
+    print(f"- running for selected_condition: {cfg.selected_condition}")
+    print(f"                    and patients: {list(cfg.patients_fg)}\n")
     
     # load in the data
     print("- loading in the data")
