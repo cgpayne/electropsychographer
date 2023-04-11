@@ -134,7 +134,7 @@ making sure to set the `user_config.py` parameters before each submission. Then 
 
 # Model and Results <a id="model-and-results"></a>
 
-In totality: the model used `ts-fresh` with `EfficientFCParamteres` to generate 54,810 features from the EEG time series, per condition; then we used a PCA via `sklearn.decomposition`to reduce the dimensionality to 60 principal components which capture 100% of the variance, per 5-fold for cross validation; and finally we used a random forest model `from sklearn.ensemble import RandomForestClassifier`, which we optimized using a random search.
+In totality: the model used `ts-fresh` with `EfficientFCParamteres` to generate 54,810 features from the EEG time series, per condition; then we used a PCA via `sklearn.decomposition`to reduce the dimensionality to 60 principal components which capture 100% of the variance, per 5-fold for cross validation; and finally we used a random forest model `from sklearn.ensemble import RandomForestClassifier`, which we optimized using a random search, in `notebooks/models/random_forest_all.ipynb`.
 
 [insert: PCA]
 
