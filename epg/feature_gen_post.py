@@ -8,6 +8,7 @@ DESCRIPTION
   this code performs post-processing on the results from feature_gen.py
   the roughly 55,230 features generated are reduced via PCA in the following script: run_PCA.py
   data is taken in from c_epg.fgen_dir, processed, and saved to c_epg.fgen_dir
+  run this after feature_gen.py and before outlier_removal.py
 NOTES
   [none]
 RESOURCES

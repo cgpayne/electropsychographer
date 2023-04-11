@@ -9,10 +9,10 @@ DESCRIPTION
     from each of patient data frames
   this is to save memory, and will be done in batches
   it is very basic in that reformatting the data frames will be handled in feature_gen.py
-  to find the desired single trial, use grep on the sub_archive/ raw data
+  to find the desired single trial, use grep on the c_epg.archive_dir raw data
     eg: grep '10.0000,90.0000,2.0000' 10.csv
-  this is the first main script to be run
   data is taken in from c_epg.archive_dir, processed, and saved to c_epg.pruned_dir
+  this is the first main script to be run
 NOTES
   [none]
 RESOURCES

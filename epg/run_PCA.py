@@ -9,6 +9,7 @@ DESCRIPTION
     then runs a PCA on it
     thus reducing the 55k generated features from before to on the order of 10
   data is taken in from c_epg.fgen_dir and saved to a sub-directory of c_epg.inter_dir
+  run this after split_the_data.py and before notebooks/models/*.ipynb
 NOTES
   [none]
 RESOURCES
@@ -18,7 +19,7 @@ RESOURCES
 CONVENTIONS
   [none]
 KNOWN BUGS
-  -- weird behaviour: (Kernel)PCA on train => test are always outliers for all configurations
+  [none]
 DESIRED FEATURES
   [none]
 '''

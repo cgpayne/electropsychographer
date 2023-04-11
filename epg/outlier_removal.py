@@ -8,6 +8,7 @@ DESCRIPTION
   this code removes outliers from the post-processed results from feature_gen.py
   data is taken in from c_epg.fgen_dir, processed, and saved to c_epg.fgen_dir
     the output file should be tagged at the end with a "_outrmv.csv", or alike, in the user config
+  run this after feature_gen_post.py and before split_the_data.py
 NOTES
   [none]
 RESOURCES

@@ -12,6 +12,7 @@ DESCRIPTION
     for a splitting, one of those folds is used as a test and the rest combines into the training, and so on
     also, StratifiedKFold() does not use oversampling or alike, but it keeps things balanced
   data is taken in from c_epg.fgen_dir, processed, and saved to c_epg.split_dir
+  run this after outlier_removal.py and before run_PCA.py
 NOTES
   [none]
 RESOURCES

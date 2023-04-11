@@ -11,6 +11,7 @@ DESCRIPTION
   there tends to be around 54,810 features generated, which are reduced via
     PCA in the script (run_PCA.py) following feature_gen_post.py
   data is taken in from c_epg.pruned_dir, processed, and saved to c_epg.fgen_dir
+  run this after data_pruning.py and before feature_gen_post.py
 NOTES
   [none]
 RESOURCES
@@ -29,6 +30,7 @@ import csv
 import pandas as pd
 from tsfresh import extract_features
 from tsfresh.feature_extraction import EfficientFCParameters
+# from tsfresh.feature_extraction import ComprehensiveFCParameters
 
 # internal imports
 import epglib.constants as c_epg
