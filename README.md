@@ -200,6 +200,6 @@ With that said, there are hints that a signature is not present in the EEG under
 
 ![](https://raw.githubusercontent.com/cgpayne/electropsychographer/master/markdown_images/cond1_fold0_UMAP_HC_SZ.png)
 
-where blue are the health controls, and orange are the patients with schizophrenia.
+where blue are the health controls, and orange are the patients with schizophrenia, and this results generalizes to the two other conditions.
 
 Although the preliminary results are disappointing so far, there is considerable potential that a new model can be built which finds a signature, and I am not prepared to make a hard conclusion on the hypothetical failure of this project without further analysis and modelling.
