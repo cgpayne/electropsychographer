@@ -152,7 +152,7 @@ We then chose to start with a random forest model on these 60 principal componen
 
 To assess the random forest model, we used a stratified 5-fold cross validation, and averaged the following metrics for analysis: accuracy, precision, recall, and F1-score (the harmonic mean of the precision and recall). Since the data is unbalanced, we focus on the F1-score and use the `RandomForestClassifier(class_weight="balanced")` balanced classifier, and used a stratified K-fold CV to keep the ratio of HC to SZ consistent. To optimize the hyper-parameters of the random forest (that is, the size of the random forest and the depth of the decision trees), we used the `RandomizedSearchCV` from `sklearn.model_selection`.
 
-As a control, we wanted to beat a model which predicted all 1's (ie, SZ's), which gave an F1-score of approximately 0.75 per fold. We decided to run all three conditions to see if any of them had a good signature in distinguishing between HC's and SZ's, and we expected condition where the button press had resulting tones to give the best signature. **However, all three conditions did not give a signature which beat the control**.
+As a control, we wanted to beat a model which predicted all 1's (ie, SZ's, which the data was unbalanced towards, 49 to 32), which gave an F1-score of approximately 0.75 per fold. We decided to run all three conditions to see if any of them had a good signature in distinguishing between HC's and SZ's, and we expected the condition where the button presses had resulting tones to give the best signature, because this would train the brain's suppression of its response to the expected stimuli more dramatically. **However, all three conditions did not give a signature which beat the control**.
 
 For condition 1, the metrics worked out to:
 
@@ -186,4 +186,20 @@ The wrost fold was fold 0, and the rest of the folds matched the control exactly
 
 # Conclusion and Future Work
 
-[insert: stuff]
+From the results above, we can see that all three conditions (the button presses with a subsequent tones, the button presses without any tones emitted, and the tone played repeatedly without a button press) yielded no signature which distinguished between healthy controls and patients with schizophrenia. Using a random forest model, all three conditions could not beat the control of predicting that every test sample had schizophrenia.
+
+The next obvious question is: why was there no discernible signature? Since we accounted for the imbalance in the data with a stratified K-fold cross validation and a balanced random forest, and we tuned the hyper-parameters, we propose the following explanations: the features generated are insufficient or cluttered, the chosen model is lacking predictive power, there is not enough training data, or the EEG test is simply not good enough to distinguish between health controls and patients with schizophrenia - ie, there is no signature present in this dataset.
+
+It is possible that the features generated from `ts-fresh` are missing what is necessary to properly characterize an EEG, despite the sheer abundance of features generated. It is also possible that too many features are generated, and they combine with too much noise in the PCA. It would be worth doing a correlational analysis to see which features are most important to the response, or using a package or GitHub project which specifically generates features for EEG's.
+
+In the future, I will also try to model with a linear regression or (convolutional) neural network, to see if that is more stable and predictive than a random forest. I would also hypothesize that using all 70 nodes might create too much imbalance or noise if a subset of those nodes are more important with respect to a possible signature. I will therefore build a new version of the project which trains the random forest on the nodes separately, then uses a majority vote to classify the sample that's scaled by the F1-score. A possible limitation to this method is that it would not characterize interaction between the nodes, so one could use an analysis to determine which nodes are most important, then combine those appropriately.
+
+Since there were only 81 samples, 32 health controls and 49 patients with schizophrenia, it is conceivable that there is simply not enough data to train the model effectively. If possible, one could run a larger scale clinical trial to collect more data, but this would require a research proposal, funding, and the subsequent labour. **We suspect that this is the most likely source of a lack of signature in the model, and hesitate to conclude that there is no signature without more data**.
+
+With that said, there are hints that a signature is not present in the EEG under these conditions. If one takes the 60 principal components and maps them down to 2 UMAP components using a UMAP embedding, we see no separation between health controls and patients with schizophrenia. For condition 1 fold 0, the UMAP is:
+
+![](https://raw.githubusercontent.com/cgpayne/electropsychographer/master/markdown_images/cond1_fold0_UMAP_HC_SZ.png)
+
+where red are the health controls, and blue are the patients with schizophrenia.
+
+Although the preliminary results are disappointing so far, there is considerable potential that a new model can be built which finds a signature, and I am not prepared to make a hard conclusion on the hypothetical failure of this project without further analysis and modelling.
