@@ -32,6 +32,8 @@ In the study, a button was repeatedly pressed which emitted a tone and the EEG r
 
 # Code
 
+In this section we describe the structure of the code and how to run it in great detail. If you would like to see a summary of the model and the subsequent results, you can skip directly to [Model and Results](#model-and-results).
+
 All the software is written in Python scripts (located in `epg/`) and Jupyter notebooks (located in `notebooks/models/`). Some notable packages used are: `ts-fresh`, `scikit-learn`, and `pytorch`. The Python version I use is `3.9.15` and there is a `requirements.txt` in the top directory.
 
 There are two main phases of the software: the *script phase* and the *notebook phase*. In the *script phase* I handle the data processing in a production-ready manner, which involves reformatting the data, generating features from the time series (using `ts-fresh`), removing outliers, creating folds for cross validation, and finally running a PCA for dimensionality reduction. In the *notebook phase* I build the model in an exploratory manner, which uses the random forest algorithm that's optimized via a randomized search in a Jupyter notebook.
@@ -140,7 +142,11 @@ In a typical PCA, we reduced to 60 principal components. For condition 2 fold 0,
 
 ![](https://raw.githubusercontent.com/cgpayne/electropsychographer/master/markdown_images/cond2_fold0_pca/cummulative_explained_variance.png)
 
-We then chose to start with a random forest model since it is robust and more efficient than a neural net for non-linear structured data. In the future we will also train a linear regression and a neural net for comparison.
+Somewhat ominously, there was no separation between healthy controls (HC) and patients with schizophrenia (SZ) in the PCA. However, we see that the first two principle components only capture 9.11% and 7.01% of the total variance:
+
+![](https://raw.githubusercontent.com/cgpayne/electropsychographer/master/markdown_images/cond2_fold0_pca/PC1_vs_PC2.png)
+
+We then chose to start with a random forest model on these 60 principal components since it is robust and more efficient than a neural net for non-linear structured data. In the future we will also train a linear regression and a neural net for comparison.
 
 ### Results
 
