@@ -20,7 +20,7 @@ Here, I propose that an EEG reading provides enough information to predict wheth
 
 # Data <a id="data"></a>
 
-We retrieved data from a [study](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4059422/) of healthy controls (HC) versus patients with schizophrenia (SZ), from a dataset in two parts on Kaggle [here](https://www.kaggle.com/datasets/broach/button-tone-sz?resource=download) and [here](https://www.kaggle.com/datasets/broach/buttontonesz2). There were 32 HC's and 49 SZ's, for a total of 81 samples.
+I retrieved data from a [study](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4059422/) of healthy controls (HC) versus patients with schizophrenia (SZ), from a dataset in two parts on Kaggle [here](https://www.kaggle.com/datasets/broach/button-tone-sz?resource=download) and [here](https://www.kaggle.com/datasets/broach/buttontonesz2). There were 32 HC's and 49 SZ's, for a total of 81 samples.
 
 In this study, it is described that HC's have a mechanism in the brain which suppresses neural activity from expected or internal stimuli. For instance, if one pushes a button that emits a tone, and that tone is expected by the brain, the brain will suppress neural activity associated with the auditory stimulus of the tone. This allows for more efficient functioning in the sensory cortex. However, patients that have schizophrenia are known to have less suppression of this neural activity, which signifies a difference in processing external and internal stimuli.
 
@@ -28,13 +28,13 @@ It is posited that this dysfunction in neural suppression contributes to the exp
 
 I therefore asked the question: **is there enough of a signature in these EEG readings to distinguish between a healthy control and a patient with schizophrenia?** If so, can a machine learning model be trained on this difference, and then predict whether or not a new patient has schizophrenia based on their EEG? A model like this could be a major tool to psychiatrists as a physiological test (of which none currently exists) for schizophrenia.
 
-In the study, a button was repeatedly pressed which emitted a tone and the EEG read the brain's electrical activity as it reacted to the stimulus of the noise. In a HC, as the button is pressed in succession, the brain should expect the tone and suppress the related neural activity, whereas a SZ will not. There were three conditions tested: the button press with a subsequent tone, the button press without a tone (silence), and simply a played tone without a button press involved. Each condition had an intended 100 trials (ie, 100 presses/tones), and each trial had 3072 time points measured on the EEG, which gives us a time series for each of the 70 nodes on the head. We chose to train on each condition separately to see which one had the best signature.
+In the study, a button was repeatedly pressed which emitted a tone and the EEG read the brain's electrical activity as it reacted to the stimulus of the noise. In a HC, as the button is pressed in succession, the brain should expect the tone and suppress the related neural activity, whereas a SZ's brain will not. There were three conditions tested: the button press with a subsequent tone, the button press without a tone (silence), and simply a played tone without a button press involved. Each condition had an intended 100 trials (ie, 100 presses/tones), and each trial had 3072 time points measured on the EEG, which gives us a time series for each of the 70 nodes on the head. I chose to train on each condition separately to see which one had the best signature.
 
 # Code
 
-In this section we describe the structure of the code and how to run it in great detail. If you would like to see a summary of the model and the subsequent results, you can skip directly to [Model and Results](#model-and-results).
+In this section I describe the structure of the code and how to run it in great detail. If you would like to see a summary of the model and the subsequent results, you can skip directly to [Model and Results](#model-and-results).
 
-All the software is written in Python scripts (located in `epg/`) and Jupyter notebooks (located in `notebooks/models/`). Some notable packages used are: `ts-fresh`, `scikit-learn`, and `pytorch`. The Python version I use is `3.9.15` and there is a `requirements.txt` in the top directory.
+All the software is written in Python scripts (located in `epg/`) and Jupyter notebooks (located in `notebooks/models/`). Some notable packages used are: `ts-fresh`, `scikit-learn`, and `pytorch`. The Python version I used is `3.9.15` and there is a `requirements.txt` in the top directory.
 
 There are two main phases of the software: the *script phase* and the *notebook phase*. In the *script phase* I handle the data processing in a production-ready manner, which involves reformatting the data, generating features from the time series (using `ts-fresh`), removing outliers, creating stratified folds for cross validation, and finally running a PCA for dimensionality reduction. In the *notebook phase* I build the model in an exploratory manner, which uses the random forest algorithm that's optimized via a randomized search in a Jupyter notebook.
 
@@ -56,7 +56,7 @@ I will now describe the individual scripts, their purpose, and how to run them. 
 
 ###### 1 - Data Pruning <a id="data-pruning"></a>
 
-To reduce computational load, I work on only one trial out of the 100 trials per patient per condition. I assume that that later trials (which each represent a time series) will have the bigger difference in signature, since that's when the brain will be best trained against the tone in the button test. That is, patients without schizophrenia will now have a suppression of the neural activity from the predicted sound, whereas those with schizophrenia will not, in theory. So, I prune out the latest trial possible, where all three conditions are present, per patient. This restriction typically happens at trial 90, but sometimes lower or higher, but (for unexplained reasons) never at the final trial (ie, 100). I found the respective trials manually.
+To reduce computational load, I work on only one trial out of the 100 trials per patient per condition. I assume that the later trials (which each represent a time series) will have the bigger difference in signature, since that's when the brain will be best trained against the tone in the button test. That is, patients without schizophrenia will now have a suppression of the neural activity from the predicted sound, whereas those with schizophrenia will not, in theory. So, I prune out the latest trial possible, where all three conditions are present, per patient. This restriction typically happens at trial 90, but sometimes lower or higher, but (for unexplained reasons) never at the final trial (ie, 100). I found the respective trials manually.
 
 To run this, first set the `patients_dp` parameter in the `user_config.py`, which lists the patient dataset to be pruned and the trial to pull out. Then execute:
 
@@ -84,7 +84,7 @@ There are many features which have all zeros exactly and also approximately (see
 
 ###### 4 - Split the Data for Stratified K-fold CV
 
-I now split the data into the desired number of folds for cross validation (or into a single standard test/training split if desired) using the `epg/split_the_data.py` script. I choose a stratified K-fold cross validation to retain the class imbalance present between the 32 health controls to 49 schizophrenia patients.
+I now split the data into the desired number of folds for cross validation (or into a single standard test/training split if desired) using the `epg/split_the_data.py` script. I chose a stratified K-fold cross validation to retain the class imbalance present between the 32 healthy controls to 49 schizophrenia patients.
 
 Set the `user_config.py` parameters (make sure the `Kfolds` parameter matches with the `test_size_fgp` parameters from the prior `feature_gen_post.py` run), and then run:
 
@@ -94,7 +94,7 @@ Note that you may use any other string in place of `kfold` to run a standard `te
 
 ###### 5 - PCA <a id="PCA"></a>
 
-To reduce the ~$10^4$ features generated from the time series to a more computationally efficient dimensionality, I use Principal Component Analysis (PCA). This will pay off when running models like random forest and alike, but I must make sure I capture enough of the data's variance in a reasonable amount of principal components. To see the typical results of this PCA, refer to [Model and Results](#model-and-results) - I can reduce the dimension to ~$10$. To run, try:
+To reduce the ~$10^4$ features generated from the time series to a more computationally efficient dimensionality, I use Principal Component Analysis (PCA). This will pay off when running models like random forest and alike, but I must make sure that I capture enough of the data's variance in a reasonable amount of principal components. To see the typical results of this PCA, refer to [Model and Results](#model-and-results) - we can reduce the dimension to ~$10$. To run, try:
 
 `python run_PCA.py pca cond1_pat1to81_outrmv_kfold-5 0 on`
 
@@ -117,7 +117,7 @@ Note that I also ran for a Kernel-PCA, which gave similar results for this datas
 
 This is where the machine learning models are built and run. For a random forest using a stratified K-fold cross validation see the `random_forest_all.ipynb` notebook. In order to execute this notebook, all the data must be processed from [Stage 1](#data-pruning) through to [Stage 5](#PCA) in the *script phase* of the codebase. For the results from this notebook, see the [Model and Results](#model-and-results) section.
 
-[insert: more]
+The random forest model is built in the `OptimalRF` class, where I tune the hyper-parameters of the random forest (decision tree depth and forest size) using a randomized search procedure. I allowed for a possible 200 estimators and 20 levels of depth in the optimization. In the following cells I run the model, calculate all the associated metrics (like F1-score), and produce confusion matrices for each fold.
 
 ### Running the Code - Summary
 
@@ -136,9 +136,9 @@ making sure to set the `user_config.py` parameters before each submission. Then 
 
 # Model and Results <a id="model-and-results"></a>
 
-In totality: the model used `ts-fresh` with `EfficientFCParamteres` to generate 54,810 features from the EEG time series, per condition; then we used a PCA via `sklearn.decomposition`to reduce the dimensionality to 60 principal components which capture 100% of the variance, per 5-fold for cross validation; and finally we used a random forest model `from sklearn.ensemble import RandomForestClassifier`, which we optimized using a random search, in `notebooks/models/random_forest_all.ipynb`.
+In totality: the model used `ts-fresh` with `EfficientFCParamteres` to generate 54,810 features from the EEG time series, per condition; then I used a PCA via `sklearn.decomposition`to reduce the dimensionality to 60 principal components which capture 100% of the variance, per 5-fold for cross validation; and finally I used a random forest model `from sklearn.ensemble import RandomForestClassifier`, which I optimized using a random search, in `notebooks/models/random_forest_all.ipynb`.
 
-In a typical PCA, we reduced to 60 principal components. For condition 2 fold 0, for example, the cumulative explained variance went as follows:
+In a typical PCA, there was a reduction to 60 principal components. For condition 2 fold 0, for example, the cumulative explained variance went as follows:
 
 ![](https://raw.githubusercontent.com/cgpayne/electropsychographer/master/markdown_images/cond2_fold0_pca/cummulative_explained_variance.png)
 
@@ -146,23 +146,25 @@ Somewhat ominously, there was no separation between healthy controls (HC) and pa
 
 ![](https://raw.githubusercontent.com/cgpayne/electropsychographer/master/markdown_images/cond2_fold0_pca/PC1_vs_PC2.png)
 
-We then chose to start with a random forest model on these 60 principal components since it is robust and more efficient than a neural net for non-linear structured data. In the future we will also train a linear regression and a neural net for comparison.
+I then chose to start with a random forest model on these 60 principal components since it is robust and more efficient than a neural net for non-linear structured data. In the future I will also train a linear regression and a neural net for comparison.
 
 ### Preliminary Results
 
-To assess the random forest model, we used a stratified 5-fold cross validation, and averaged the following metrics for analysis: accuracy, precision, recall, and F1-score (the harmonic mean of the precision and recall). Since the data is unbalanced, we focus on the F1-score and use the `RandomForestClassifier(class_weight="balanced")` balanced classifier, and used a stratified K-fold CV to keep the ratio of HC to SZ consistent. To optimize the hyper-parameters of the random forest (that is, the size of the random forest and the depth of the decision trees), we used the `RandomizedSearchCV` from `sklearn.model_selection`.
+To assess the random forest model, I used a stratified 5-fold cross validation, and averaged the following metrics for analysis: accuracy, precision, recall, and F1-score (the harmonic mean of the precision and recall). Since the data is unbalanced, I focused on the F1-score and used the `RandomForestClassifier(class_weight="balanced")` balanced classifier, and used a stratified K-fold CV to keep the ratio of HC to SZ consistent. To optimize the hyper-parameters of the random forest (that is, the size of the random forest and the depth of the decision trees), I used the `RandomizedSearchCV` from `sklearn.model_selection`.
 
-As a control, we wanted to beat a model which predicted all 1's (ie, SZ's, which the data was unbalanced towards, 49 to 32), which gave an F1-score of approximately 0.75 per fold. We decided to run all three conditions to see if any of them had a good signature in distinguishing between HC's and SZ's, and we expected the condition where the button presses had resulting tones to give the best signature, because this would train the brain's suppression of its response to the expected stimuli more dramatically. **However, all three conditions did not give a signature which beat the control**.
+As a control, we want to beat a model which predicts all 1's (ie, SZ's, which the data was unbalanced towards, 49 to 32), which gives an F1-score of approximately 0.75 per fold. I decided to run all three conditions to see if any of them had a good signature in distinguishing between HC's and SZ's, and I expected the condition where the button presses had resulting tones to give the best signature, because this would train the brain's suppression of its response to the expected stimuli more dramatically. **However, all three conditions did not give a signature which beat the control**.
 
 For condition 1, the metrics worked out to:
 
 ![](https://raw.githubusercontent.com/cgpayne/electropsychographer/master/markdown_images/cond1_metrics.png)
 
-The best fold was fold 0, and the rest of the folds matched the control exactly. The confusion matrices of fold 0 and fold 1 are, respectively:
+Note that the metrics are approximately the same between the control and the model. The best fold was fold 0, and the rest of the folds matched the control exactly. The confusion matrices of fold 0 and fold 1 are, respectively:
 
 ![](https://raw.githubusercontent.com/cgpayne/electropsychographer/master/markdown_images/cond1_CM_fold0.png)
 
 ![](https://raw.githubusercontent.com/cgpayne/electropsychographer/master/markdown_images/cond1_CM_fold1.png)
+
+One can see that the model is almost always predicting 1's (SZ), and note that the 0 class is HC.
 
 For condition 2, the metrics worked out to:
 
@@ -186,9 +188,9 @@ The worst fold was fold 0, and the rest of the folds matched the control exactly
 
 # Conclusion and Future Work
 
-From the results above, we can see that all three conditions (the button presses with a subsequent tones, the button presses without any tones emitted, and the tone played repeatedly without a button press) yielded no signature which distinguished between healthy controls and patients with schizophrenia. Using a random forest model, all three conditions could not beat the control of predicting that every test sample had schizophrenia, with an F1-score of 0.75.
+From the results above, we can see that all three conditions (the button presses with a subsequent tones, the button presses without any tones emitted, and the tone played repeatedly without a button press) yielded no signature which distinguishes between healthy controls and patients with schizophrenia. Using a random forest model, all three conditions could not beat the control of predicting that every test sample had schizophrenia, with an F1-score of 0.75.
 
-The next obvious question is: why was there no discernible signature? Since we accounted for the imbalance in the data with a stratified K-fold cross validation and a balanced random forest, and we tuned the hyper-parameters, we propose the following explanations: the features generated are insufficient or cluttered, the chosen model is lacking predictive power, there is not enough training data, or the EEG test is simply not good enough to distinguish between health controls and patients with schizophrenia - ie, there is no signature present in this dataset.
+The next obvious question is: why was there no discernible signature? Since I accounted for the imbalance in the data with a stratified K-fold cross validation and a balanced random forest, and I tuned the hyper-parameters, I propose the following explanations: the features generated are insufficient or cluttered, the chosen model is lacking predictive power, there is not enough training data, or the EEG test is simply not good enough to distinguish between health controls and patients with schizophrenia - ie, there is no signature present in this dataset.
 
 It is possible that the features generated from `ts-fresh` are missing what is necessary to properly characterize an EEG, despite the sheer abundance of features generated. It is also possible that too many features are generated, and they combine with too much noise in the PCA. It would be worth doing a correlational analysis to see which features are most important to the response, or using a package or GitHub project which specifically generates features for EEG's.
 
@@ -200,6 +202,6 @@ With that said, there are hints that a signature is not present in the EEG under
 
 ![](https://raw.githubusercontent.com/cgpayne/electropsychographer/master/markdown_images/cond1_fold0_UMAP_HC_SZ.png)
 
-where blue are the health controls, and orange are the patients with schizophrenia, and these results generalizes to the two other conditions.
+where blue are the health controls, and orange are the patients with schizophrenia - and these results generalizes to the two other conditions.
 
 Although the preliminary results are disappointing so far, there is considerable potential that a new model can be built which finds a signature, and I am not prepared to make a hard conclusion on the acceptance of the null hypothesis of this project without further analysis and modelling.
