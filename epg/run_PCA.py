@@ -147,7 +147,8 @@ class DataEPG():
         plt.title('explained variance')
         plt.xlabel('component')
         plt.ylabel('percent explained')
-        plt.xticks([ii for ii in range(1, self.num_components+1)])
+        # plt.xticks([ii for ii in range(1, self.num_components+1)])
+        plt.xticks([1] + list(np.arange(5, 65, 5)))
         plt.savefig(fig_dir_now + '/explained_variance.pdf')
         if pca_show_fig == 'on':
             plt.show()
@@ -164,7 +165,8 @@ class DataEPG():
         plt.title('cummulative explained variance')
         plt.xlabel('component')
         plt.ylabel('percent explained')
-        plt.xticks([ii for ii in range(1, self.num_components+1)])
+        # plt.xticks([ii for ii in range(1, self.num_components+1)])
+        plt.xticks([1] + list(np.arange(5, 65, 5)))
         plt.savefig(fig_dir_now + '/cummulative_explained_variance.pdf')
         if pca_show_fig == 'on':
             plt.show()
