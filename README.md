@@ -148,9 +148,41 @@ Somewhat ominously, there was no separation between healthy controls (HC) and pa
 
 We then chose to start with a random forest model on these 60 principal components since it is robust and more efficient than a neural net for non-linear structured data. In the future we will also train a linear regression and a neural net for comparison.
 
-### Results
+### Preliminary Results
 
-[insert: stuff]
+To assess the random forest model, we used a stratified 5-fold cross validation, and averaged the following metrics for analysis: accuracy, precision, recall, and F1-score (the harmonic mean of the precision and recall). Since the data is unbalanced, we focus on the F1-score and use the `RandomForestClassifier(class_weight="balanced")` balanced classifier, and used a stratified K-fold CV to keep the ratio of HC to SZ consistent. To optimize the hyper-parameters of the random forest (that is, the size of the random forest and the depth of the decision trees), we used the `RandomizedSearchCV` from `sklearn.model_selection`.
+
+As a control, we wanted to beat a model which predicted all 1's (ie, SZ's), which gave an F1-score of approximately 0.75 per fold. We decided to run all three conditions to see if any of them had a good signature in distinguishing between HC's and SZ's, and we expected condition where the button press had resulting tones to give the best signature. **However, all three conditions did not give a signature which beat the control**.
+
+For condition 1, the metrics worked out to:
+
+![](https://raw.githubusercontent.com/cgpayne/electropsychographer/master/markdown_images/cond1_metrics.png)
+
+The best fold was fold 0, and the rest of the folds matched the control exactly. The confusion matrices of fold 0 and fold 1 are, respectively:
+
+![](https://raw.githubusercontent.com/cgpayne/electropsychographer/master/markdown_images/cond1_CM_fold0.png)
+
+![](https://raw.githubusercontent.com/cgpayne/electropsychographer/master/markdown_images/cond1_CM_fold1.png)
+
+For condition 2, the metrics worked out to:
+
+![](https://raw.githubusercontent.com/cgpayne/electropsychographer/master/markdown_images/cond2_metrics.png)
+
+The best fold was fold 0, the worst fold was fold 2, and the rest of the folds matched the control exactly. The confusion matrices of fold 0 and fold 2 are, respectively:
+
+![](https://raw.githubusercontent.com/cgpayne/electropsychographer/master/markdown_images/cond2_CM_fold0.png)
+
+![](https://raw.githubusercontent.com/cgpayne/electropsychographer/master/markdown_images/cond2_CM_fold2.png)
+
+And finally, for condition 3, the metrics worked out to:
+
+![](https://raw.githubusercontent.com/cgpayne/electropsychographer/master/markdown_images/cond3_metrics.png)
+
+The wrost fold was fold 0, and the rest of the folds matched the control exactly. The confusion matrices of fold 0 and fold 1 are, respectively:
+
+![](https://raw.githubusercontent.com/cgpayne/electropsychographer/master/markdown_images/cond3_CM_fold0.png)
+
+![](https://raw.githubusercontent.com/cgpayne/electropsychographer/master/markdown_images/cond3_CM_fold1.png)
 
 # Conclusion and Future Work
 
