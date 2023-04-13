@@ -136,7 +136,9 @@ making sure to set the `user_config.py` parameters before each submission. Then 
 
 In totality: the model used `ts-fresh` with `EfficientFCParamteres` to generate 54,810 features from the EEG time series, per condition; then we used a PCA via `sklearn.decomposition`to reduce the dimensionality to 60 principal components which capture 100% of the variance, per 5-fold for cross validation; and finally we used a random forest model `from sklearn.ensemble import RandomForestClassifier`, which we optimized using a random search, in `notebooks/models/random_forest_all.ipynb`.
 
-[insert: PCA]
+In a typical PCA, we reduced to 60 principal components. For condition 2, for example, the cumulative explained variance went as follows:
+
+![](https://github.com/cgpayne/electropsychographer/tree/master/markdown_images/cond2_fold0_pca/cummulative_explained_variance.pdf)
 
 We then chose to start with a random forest model since it is robust and more efficient than a neural net for non-linear structured data. In the future we will also train a linear regression and a neural net for comparison.
 
