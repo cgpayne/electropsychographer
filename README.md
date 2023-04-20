@@ -146,7 +146,7 @@ Somewhat ominously, there was no separation between healthy controls (HC) and pa
 
 ![](https://raw.githubusercontent.com/cgpayne/electropsychographer/master/markdown_images/cond2_fold0_pca/PC1_vs_PC2.png)
 
-I then chose to start with a random forest model on these 60 principal components since it is robust and more efficient than a neural net for non-linear structured data. In the future I will also train a linear regression and a neural net for comparison.
+I then chose to start with a random forest model on these 60 principal components since it is robust and more efficient than a neural net for non-linear structured data. In the future I will also train a logistic regression and a neural net for comparison.
 
 ### Preliminary Results
 
@@ -194,7 +194,7 @@ The next obvious question is: why was there no discernible signature? Since I ac
 
 It is possible that the features generated from `ts-fresh` are missing what is necessary to properly characterize an EEG, despite the sheer abundance of features generated. It is also possible that too many features are generated, and they combine with too much noise in the PCA. It would be worth doing a correlational analysis to see which features are most important to the response, or using a package or GitHub project which specifically generates features for EEG's.
 
-In the future, I will also try to model with a linear regression or (convolutional) neural network, to see if they are more stable and predictive than a random forest. I would also hypothesize that using all 70 nodes might create too much imbalance or noise if a subset of those nodes are more important with respect to a possible signature. I will therefore build a new version of the project which trains the random forest on the nodes separately, then use a majority vote (scaled by the F1-score) to classify the sample. A possible limitation to this method is that it would not characterize interaction between the nodes, so one could use an analysis to determine which nodes are most important, then combine those appropriately.
+In the future, I will also try to model with a logistic regression or a (convolutional) neural network, to see if they are more stable and predictive than a random forest. I would also hypothesize that using all 70 nodes might create too much imbalance or noise if a subset of those nodes are more important with respect to a possible signature. I will therefore build a new version of the project which trains the random forest on the nodes separately, then use a majority vote (scaled by the F1-score) to classify the sample. A possible limitation to this method is that it would not characterize interaction between the nodes, so one could use an analysis to determine which nodes are most important, then combine those appropriately.
 
 Since there were only 81 samples, 32 healthy controls and 49 patients with schizophrenia, it is conceivable that there is simply not enough data to train the model effectively. If possible, one could run a larger scale clinical trial to collect more data, but this would require a research proposal, funding, and the subsequent labour. **I suspect that this is the most likely source of a lack of signature in the model, and hesitate to conclude that there is no signature without more data**.
 
