@@ -289,10 +289,11 @@ if __name__ == '__main__':
         fy_train = data_sub_dir + '/y_train-' + fend
         fy_test = data_sub_dir + '/y_test-' + fend
     else:
-        fX_train = data_sub_dir + '/X_train_' + pca_data_handle + '.csv'
-        fX_test = data_sub_dir + '/X_test_' + pca_data_handle + '.csv'
-        fy_train = data_sub_dir + '/y_train_' + pca_data_handle + '.csv'
-        fy_test = data_sub_dir + '/y_test_' + pca_data_handle + '.csv'
+        fend = pca_data_handle.split('_standard')[0] + '.csv'
+        fX_train = data_sub_dir + '/X_train_' + fend
+        fX_test = data_sub_dir + '/X_test_' + fend
+        fy_train = data_sub_dir + '/y_train_' + fend
+        fy_test = data_sub_dir + '/y_test_' + fend
     
     print("- loading in the data")
     X_train = np.loadtxt(fX_train, delimiter=',')

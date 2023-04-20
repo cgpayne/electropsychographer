@@ -59,10 +59,10 @@ class DataSplitter():
         '''
         if self.rand_mode == 'random':
             self.X_train, self.X_test, self.y_train, self.y_test = \
-                train_test_split(self.X, self.y, test_size=cfg.test_size, random_state=math.floor(time.time()))
+                train_test_split(self.X, self.y, test_size=cfg.test_size, stratify=self.y, random_state=math.floor(time.time()))
         else:
             self.X_train, self.X_test, self.y_train, self.y_test = \
-                train_test_split(self.X, self.y, test_size=cfg.test_size, random_state=0)
+                train_test_split(self.X, self.y, test_size=cfg.test_size, stratify=self.y, random_state=0)
         # dd = 74; X_train = X.drop(index=[dd]); X_test = X.loc[[dd]]; y_train = y.drop(index=[dd]); y_test = y.loc[[dd]]
     
     def _kfold_train_test_split(self, train: np.ndarray, test: np.ndarray):
@@ -108,6 +108,16 @@ class DataSplitter():
             self._kfold_split()
         else:
             self._standard_split()
+            
+            # do some book keeping
+            y_train_count0 = len([sub for sub in self.y_train if sub == 0])
+            y_train_count1 = len(self.y_train) - y_train_count0
+            y_test_count0 = len([sub for sub in self.y_test if sub == 0])
+            y_test_count1 = len(self.y_test) - y_test_count0
+            print("- some book keepting:")
+            print(f"  -- y_train has {y_train_count1} / {y_train_count0} = {y_train_count1/y_train_count0:.2f}x 1's to 0's")
+            print(f"     y_test has {y_test_count1} / {y_test_count0} = {y_test_count1/y_test_count0:.2f}x 1's to 0's")
+            print(f"     compared to 49 / 32 = {49/32:.2f}x 1's (SZ) to 0's (HC) in the full dataset")
     
     def save(self):
         '''
