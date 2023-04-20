@@ -146,7 +146,7 @@ Somewhat ominously, there was no separation between healthy controls (HC) and pa
 
 ![](https://raw.githubusercontent.com/cgpayne/electropsychographer/master/markdown_images/cond2_fold0_pca/PC1_vs_PC2.png)
 
-I then chose to start with a random forest model on these 60 principal components since it is robust and more efficient than a neural net for non-linear structured data. In the future I will also train a logistic regression and a neural net for comparison.
+I then chose to start with a random forest model on these 60 principal components since it is robust and more efficient than a neural net for non-linear structured data with few samples. In the future I will also train a logistic regression and a neural net for comparison.
 
 ### Preliminary Results
 
