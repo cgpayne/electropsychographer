@@ -94,7 +94,7 @@ Note that you may use any other string in place of `kfold` to run a standard `te
 
 ###### 5 - PCA <a id="PCA"></a>
 
-To reduce the ~$10^4$ features generated from the time series to a more computationally efficient dimensionality, I use Principal Component Analysis (PCA). This will pay off when running models like random forest and alike, but I must make sure that I capture enough of the data's variance in a reasonable amount of principal components. To see the typical results of this PCA, refer to [Model and Results](#model-and-results) - we can reduce the dimension to ~$10$. To run, try:
+To reduce the ~10<sup>4</sup> features generated from the time series to a more computationally efficient dimensionality, I use Principal Component Analysis (PCA). This will pay off when running models like random forest and alike, but I must make sure that I capture enough of the data's variance in a reasonable amount of principal components. To see the typical results of this PCA, refer to [Model and Results](#model-and-results) - we can reduce the dimension to ~10. To run, try:
 
 `python run_PCA.py pca cond1_pat1to81_outrmv_kfold-5 0 on`
 
@@ -148,9 +148,17 @@ Somewhat ominously, there was no separation between healthy controls (HC) and pa
 
 I then chose to start with a random forest model on these 60 principal components since it is robust and more efficient than a neural net for non-linear structured data with few samples. In the future I will also train a logistic regression and a neural net for comparison.
 
+### Metrics
+
+To assess the random forest model, I used a stratified K-fold (K = 5) cross validation, and averaged the following metrics for analysis: accuracy, precision, recall, and F1-score (the harmonic mean of the precision and recall).
+
+In healthcare diagnostics, we care more about recall = true-positives / (true-positives + **false-negatives**) than we do about precision = true-positives / (true-positives + **false-positives**). This is because to maximize recall, we need low false-negatives, whereas to maximize precision, we need low false-positives; however, in diagnostics we would rather have no false-negatives (ie, we never predict someone doesn't have cancer when they actually do) and allow for some false-positives. In the case of a false-positive, physicians can use further tests to rule out a positive diagnosis, and so we prefer recall over precision.
+
+However, as we will see in the results, my model will predict 100% recall in all cases. So to optimize the model, I will focus on the F1-score because the data is unbalanced.
+
 ### Preliminary Results
 
-To assess the random forest model, I used a stratified 5-fold cross validation, and averaged the following metrics for analysis: accuracy, precision, recall, and F1-score (the harmonic mean of the precision and recall). Since the data is unbalanced, I focused on the F1-score and used the `RandomForestClassifier(class_weight="balanced")` balanced classifier, and used a stratified K-fold CV to keep the ratio of HC to SZ consistent. To optimize the hyper-parameters of the random forest (that is, the size of the random forest and the depth of the decision trees), I used the `RandomizedSearchCV` from `sklearn.model_selection`.
+For the unbalanced data, I used the `RandomForestClassifier(class_weight="balanced")` balanced classifier, and used a stratified 5-fold cross validation to keep the ratio of HC to SZ consistent. To optimize the hyper-parameters of the random forest (that is, the size of the random forest and the depth of the decision trees), I used the `RandomizedSearchCV` from `sklearn.model_selection`.
 
 As a control, we want to beat a model which predicts all 1's (ie, SZ's, which the data was unbalanced towards, 49 to 32), which gives an F1-score of approximately 0.75 per fold. I decided to run all three conditions to see if any of them had a good signature in distinguishing between HC's and SZ's, and I expected the condition where the button presses had resulting tones to give the best signature, because this would train the brain's suppression of its response to the expected stimuli more dramatically. **However, all three conditions did not give a signature which beat the control**.
 
