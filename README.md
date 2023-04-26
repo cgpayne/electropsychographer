@@ -30,6 +30,14 @@ I therefore asked the question: **is there enough of a signature in these EEG re
 
 In the study, a button was repeatedly pressed which emitted a tone and the EEG read the brain's electrical activity as it reacted to the stimulus of the noise. In a HC, as the button is pressed in succession, the brain should expect the tone and suppress the related neural activity, whereas a SZ's brain will not. There were three conditions tested: the button press with a subsequent tone, the button press without a tone (silence), and simply a played tone without a button press involved. Each condition had an intended 100 trials (ie, 100 presses/tones), and each trial had 3072 time points measured on the EEG, which gives us a time series for each of the 70 electrodes on the head. I chose to train on each condition separately to see which one had the best signature.
 
+### Visualization
+
+To visualize the data, we will do two things: first we will normalize the time series using a max-min scaling for effective comparisons, and then (without loss of generality) we will focus on the auditory cortex for context. The auditory cortex is split into two sections which run in parallel to each other across the skull: the primary auditory cortex and the secondary auditory cortex. Three electrodes run over those sections, which we call the: front, middle, and back. Respectively, the electrodes on the left side of skull are labelled T7 (left-front), TP7 (left-middle), and P7 (left-back), whereas the on the right side they are labelled T8 (right-front), TP8 (right-middle), P8 (right-back).
+
+![](https://www.sv.uio.no/psi/english/research/projects/human-time-data/documents/data-lifecycle/eeg/images/1005px-international_10-20_system_for_eeg-mcn.svg.png)
+
+![](https://raw.githubusercontent.com/cgpayne/electropsychographer/master/markdown_images/EEG_full/1vs2vs3_T7_T8_tight.png)
+
 # Code
 
 In this section I describe the structure of the code and how to run it in great detail. If you would like to see a summary of the model and the subsequent results, you can skip directly to [Model and Results](#model-and-results).
