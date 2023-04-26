@@ -46,7 +46,7 @@ Now I plot each condition separately so we can compare the HC and SZ directly wi
 
 ![](https://raw.githubusercontent.com/cgpayne/electropsychographer/master/markdown_images/EEG_full/HC_vs_SZ_cond123_P7.png)
 
-The HC and SZ are comparable in condition 1 and condition 2, but more distinct in condition 3. In condition 3 we can clearly see wave patterns, these are manifestations of alpha, beta, delta, and theta brain waves.
+The HC and SZ are comparable in condition 1 and condition 2, but more distinct in condition 3. In condition 3 we can clearly see wave patterns, these are manifestations of alpha, beta, and gamma brain waves.
 
 Finally, we compare the left hemisphere (in the left column) with the right hemisphere (in the right column) from front to back for:
 
@@ -186,7 +186,7 @@ Somewhat ominously, there was no separation between healthy controls (HC) and pa
 
 ### Choice of Model
 
-I then chose to start with a random forest model on these 60 principal components. As can be seen in the [Visualization](#visualization), many cyclic patterns arise in the EEG brain waves (alpha, beta, delta, theta) which occur in the 1ms to 1sec time scale across the ~3sec time series recorded. This would suggest that a convolutional neural network (CNN) would be useful, since it is good at distinguishing these sorts of patterns independent of shifts in time. However, a random forest is more robust and more efficient than a CNN for non-linear structured data with few samples. This is because random forests account for overfitting of the model via bagging, whereas neural nets have a tendency to overfit, hence they require larger datasets. In the future I will also train a logistic regression and a neural net for the purpose of comparison.
+I then chose to start with a random forest model on these 60 principal components. As can be seen in the [Visualization](#visualization), many cyclic patterns arise in the EEG brain waves (alpha, beta, gamma) which occur in the 1ms to 1sec time scale across the ~3sec time series recorded. This would suggest that a convolutional neural network (CNN) would be useful, since it is good at distinguishing these sorts of patterns independent of shifts in time. However, a random forest is more robust and more efficient than a CNN for non-linear structured data with few samples. This is because random forests account for overfitting of the model via bagging, whereas neural nets have a tendency to overfit, hence they require larger datasets. In the future I will also train a logistic regression and a neural net for the purpose of comparison.
 
 ### Metrics
 
