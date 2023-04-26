@@ -30,7 +30,7 @@ I therefore asked the question: **is there enough of a signature in these EEG re
 
 In the study, a button was repeatedly pressed which emitted a tone and the EEG read the brain's electrical activity as it reacted to the stimulus of the noise. In a HC, as the button is pressed in succession, the brain should expect the tone and suppress the related neural activity, whereas a SZ's brain will not. There were three conditions tested: the button press with a subsequent tone, the button press without a tone (silence), and simply a played tone without a button press involved. Each condition had an intended 100 trials (ie, 100 presses/tones), and each trial had 3072 time points measured on the EEG, which gives us a time series for each of the 70 electrodes on the head. I chose to train on each condition separately to see which one had the best signature.
 
-### Visualization
+### Visualization <a id="visualization"></a>
 
 To visualize the data, I will do two things: first I will normalize the time series using a min-max scaling to make the &mu;V amplitudes unitless, which I do to make effective comparisons; and then, without loss of generality, I will focus on the auditory cortex for context. The auditory cortex is split into two sections which run in parallel to each other across the skull: the primary auditory cortex and the secondary auditory cortex. Three electrodes run over those cortex sections, which I call the: front, middle, and back. Respectively, the electrodes on the left side of skull are labelled T7 (left-front), TP7 (left-middle), and P7 (left-back), whereas the on the right side they are labelled T8 (right-front), TP8 (right-middle), P8 (right-back).
 
@@ -46,7 +46,7 @@ Now I plot each condition separately so we can compare the HC and SZ directly wi
 
 ![](https://raw.githubusercontent.com/cgpayne/electropsychographer/master/markdown_images/EEG_full/HC_vs_SZ_cond123_P7.png)
 
-The HC and SZ are comparable in condition 1 and condition 2, but more distinct in condition 3.
+The HC and SZ are comparable in condition 1 and condition 2, but more distinct in condition 3. In condition 3 we can clearly see wave patterns, these are manifestations of alpha, beta, delta, and theta brain waves.
 
 Finally, we compare the left hemisphere (in the left column) with the right hemisphere (in the right column) from front to back for:
 
@@ -68,7 +68,7 @@ All of these visualizations show promise that there is a measurable difference b
 
 # Code
 
-In this section I describe the structure of the code and how to run it in great detail. If you would like to see a summary of the model and the subsequent results, you can skip directly to [Model and Results](#model-and-results).
+In this section I describe the structure of the code and how to run it in great detail. If you would like to see a summary of the model and the subsequent results, you can skip directly to [Model](#model) and [Results](#results) sections.
 
 All the software is written in Python scripts (located in `epg/`) and Jupyter notebooks (located in `notebooks/models/`). Some notable packages used are: `ts-fresh`, `scikit-learn`, and `pytorch`. The Python version I used is `3.9.15` and there is a `requirements.txt` in the top directory.
 
@@ -130,7 +130,7 @@ Note that you may use any other string in place of `kfold` to run a standard `te
 
 ###### 5 - PCA <a id="PCA"></a>
 
-To reduce the ~10<sup>4</sup> features generated from the time series to a more computationally efficient dimensionality, I use Principal Component Analysis (PCA). This will pay off when running models like random forest and alike, but I must make sure that I capture enough of the data's variance in a reasonable amount of principal components. To see the typical results of this PCA, refer to [Model and Results](#model-and-results) - we can reduce the dimension to ~10. To run, try:
+To reduce the ~10<sup>4</sup> features generated from the time series to a more computationally efficient dimensionality, I use Principal Component Analysis (PCA). This will pay off when running models like random forest and alike, but I must make sure that I capture enough of the data's variance in a reasonable amount of principal components. To see the typical results of this PCA, refer to the [PCA](#pca-results) section - we can reduce the dimension to ~10. To run, try:
 
 `python run_PCA.py pca cond1_pat1to81_outrmv_kfold-5 0 on`
 
@@ -151,7 +151,7 @@ Note that I also ran for a Kernel-PCA, which gave similar results for this datas
 
 ### Notebook Phase
 
-This is where the machine learning models are built and run. For a random forest using a stratified K-fold cross validation see the `random_forest_all.ipynb` notebook. In order to execute this notebook, all the data must be processed from [Stage 1](#data-pruning) through to [Stage 5](#PCA) in the *script phase* of the codebase. For the results from this notebook, see the [Model and Results](#model-and-results) section.
+This is where the machine learning models are built and run. For a random forest using a stratified K-fold cross validation see the `random_forest_all.ipynb` notebook. In order to execute this notebook, all the data must be processed from [Stage 1](#data-pruning) through to [Stage 5](#PCA) in the *script phase* of the codebase. For the results from this notebook, see the [Results](#results) section.
 
 The random forest model is built in the `OptimalRF` class, where I tune the hyper-parameters of the random forest (decision tree depth and forest size) using a randomized search procedure. I allowed for a possible 200 estimators and 20 levels of depth in the optimization. In the following cells I run the model, calculate all the associated metrics (like F1-score), and produce confusion matrices for each fold.
 
@@ -170,9 +170,11 @@ python run_PCA.py pca cond1_pat1to81_outrmv_kfold-5 0 on
 
 making sure to set the `user_config.py` parameters before each submission. Then execute through the cells of the `notebooks/models/random_forest_all.py` Jupyter notebook.
 
-# Model and Results <a id="model-and-results"></a>
+# Model <a id="model"></a>
 
 In totality: the model used `ts-fresh` with `EfficientFCParamteres` to generate 54,810 features from the EEG time series, per condition; then I used a PCA via `sklearn.decomposition`to reduce the dimensionality to 60 principal components which capture 100% of the variance, per 5-fold for cross validation; and finally I used a random forest model `from sklearn.ensemble import RandomForestClassifier`, which I optimized using a random search, in `notebooks/models/random_forest_all.ipynb`.
+
+### PCA <a id="pca-results"></a>
 
 In a typical PCA, there was a reduction to 60 principal components. For condition 2 fold 0, for example, the cumulative explained variance went as follows:
 
@@ -182,7 +184,9 @@ Somewhat ominously, there was no separation between healthy controls (HC) and pa
 
 ![](https://raw.githubusercontent.com/cgpayne/electropsychographer/master/markdown_images/cond2_fold0_pca/PC1_vs_PC2.png)
 
-I then chose to start with a random forest model on these 60 principal components since it is robust and more efficient than a neural net for non-linear structured data with few samples. In the future I will also train a logistic regression and a neural net for comparison.
+### Choice of Model
+
+I then chose to start with a random forest model on these 60 principal components. As can be seen in the [Visualization](#visualization), many cyclic patterns arise in the EEG brain waves (alpha, beta, delta, theta) which occur in the 1ms to 1sec time scale across the ~3sec time series recorded. This would suggest that a convolutional neural network (CNN) would be useful, since it is good at distinguishing these sorts of patterns independent of shifts in time. However, a random forest is more robust and more efficient than a CNN for non-linear structured data with few samples. This is because random forests account for overfitting of the model via bagging, whereas neural nets have a tendency to overfit, hence they require larger datasets. In the future I will also train a logistic regression and a neural net for the purpose of comparison.
 
 ### Metrics
 
@@ -192,9 +196,9 @@ In healthcare diagnostics, we care more about recall = true-positives / (true-po
 
 However, as we will see in the results, my model will predict 100% recall in all cases. So to optimize the model, I will focus on the F1-score because the data is unbalanced.
 
-### Preliminary Results
+# Results <a id="results"></a>
 
-For the unbalanced data, I used the `RandomForestClassifier(class_weight="balanced")` balanced classifier, and used a stratified 5-fold cross validation to keep the ratio of HC to SZ consistent. To optimize the hyper-parameters of the random forest (that is, the size of the random forest and the depth of the decision trees), I used the `RandomizedSearchCV` from `sklearn.model_selection`.
+In this section we go over the preliminary results. For the unbalanced data, I used the `RandomForestClassifier(class_weight="balanced")` balanced classifier, and used a stratified 5-fold cross validation to keep the ratio of HC to SZ consistent. To optimize the hyper-parameters of the random forest (that is, the size of the random forest and the depth of the decision trees), I used the `RandomizedSearchCV` from `sklearn.model_selection`.
 
 As a control, we want to beat a model which predicts all 1's (ie, SZ's, which the data was unbalanced towards, 49 to 32), which gives an F1-score of approximately 0.75 per fold. I decided to run all three conditions to see if any of them had a good signature in distinguishing between HC's and SZ's, and I expected the condition where the button presses had resulting tones to give the best signature, because this would train the brain's suppression of its response to the expected stimuli more dramatically. **However, all three conditions did not give a signature which beat the control**.
 
