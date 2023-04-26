@@ -32,11 +32,39 @@ In the study, a button was repeatedly pressed which emitted a tone and the EEG r
 
 ### Visualization
 
-To visualize the data, we will do two things: first we will normalize the time series using a max-min scaling for effective comparisons, and then (without loss of generality) we will focus on the auditory cortex for context. The auditory cortex is split into two sections which run in parallel to each other across the skull: the primary auditory cortex and the secondary auditory cortex. Three electrodes run over those sections, which we call the: front, middle, and back. Respectively, the electrodes on the left side of skull are labelled T7 (left-front), TP7 (left-middle), and P7 (left-back), whereas the on the right side they are labelled T8 (right-front), TP8 (right-middle), P8 (right-back).
+To visualize the data, I will do two things: first I will normalize the time series using a max-min scaling to make the &mu;V amplitudes unitless, which I do to make effective comparisons; and then, without loss of generality, I will focus on the auditory cortex for context. The auditory cortex is split into two sections which run in parallel to each other across the skull: the primary auditory cortex and the secondary auditory cortex. Three electrodes run over those cortex sections, which I call the: front, middle, and back. Respectively, the electrodes on the left side of skull are labelled T7 (left-front), TP7 (left-middle), and P7 (left-back), whereas the on the right side they are labelled T8 (right-front), TP8 (right-middle), P8 (right-back).
 
-![](https://www.sv.uio.no/psi/english/research/projects/human-time-data/documents/data-lifecycle/eeg/images/1005px-international_10-20_system_for_eeg-mcn.svg.png)
+![](https://raw.githubusercontent.com/cgpayne/electropsychographer/master/markdown_images/EEG_electrodes_diagram.png)
+
+Above, the 6 electrodes of interest are mapped across the skull, with the remaining 64 electrodes excluded for clarity. Below, we compare the three conditions for the HC (patient 1) on the top row and the SZ (patient 81) on the bottom row.
 
 ![](https://raw.githubusercontent.com/cgpayne/electropsychographer/master/markdown_images/EEG_full/1vs2vs3_T7_T8_tight.png)
+
+Here we can see that the HC and SZ are visibly different within both the T7 and T8 electrodes respectively. However, the difference between the conditions in each subplot is less clear. The most striking difference is in the right-front electrode T8 in the SZ patient, which suggests that there is asymmetry between the right and left hemispheres. It also corroborates the intuition that the HC should see less of a difference between the conditions due to the reduced neural response to the stimuli, whereas the SZ still measures a difference. In other words, the HC has similar neural activity when performing the press/tone vs press/silence task, but the SZ's brain still distinguishes between the conditions because its ability to suppress the response to the expected stimuli is impaired.
+
+Now I plot each condition separately so we can compare the HC and SZ directly within each subplot for the P7 electrode.
+
+![](https://raw.githubusercontent.com/cgpayne/electropsychographer/master/markdown_images/EEG_full/HC_vs_SZ_cond123_P7.png)
+
+The HC and SZ are comparable in condition 1 and condition 2, but more distinct in condition 3.
+
+Finally, we compare the left hemisphere (in the left column) with the right hemisphere (in the right column) from front to back for:
+
+- condition 1:
+
+![](https://raw.githubusercontent.com/cgpayne/electropsychographer/master/markdown_images/EEG_full/HC_vs_SZ_auditory_cortex_cond1_tight.png)
+
+- condition 2:
+
+![](https://raw.githubusercontent.com/cgpayne/electropsychographer/master/markdown_images/EEG_full/HC_vs_SZ_auditory_cortex_cond2_tight.png)
+
+- condition 3:
+
+![](https://raw.githubusercontent.com/cgpayne/electropsychographer/master/markdown_images/EEG_full/HC_vs_SZ_auditory_cortex_cond3_tight.png)
+
+Again we see that condition 3 has the most variability, and that the hemispheres are asymmetric in SZ. Interestingly, in condition 1 and 2 for SZ, the left hemisphere's time series completely track with each other across the electrodes from front to back, but in the right hemisphere T8 and TP8 track, but P8 differs. For HC we can see symmetry between the hemispheres and that the electrodes track from front to back.
+
+All of these visualizations show promise that there is a measurable difference between the EEG's of people with or without schizophrenia.
 
 # Code
 
