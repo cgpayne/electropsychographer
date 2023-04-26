@@ -32,7 +32,7 @@ In the study, a button was repeatedly pressed which emitted a tone and the EEG r
 
 ### Visualization
 
-To visualize the data, I will do two things: first I will normalize the time series using a max-min scaling to make the &mu;V amplitudes unitless, which I do to make effective comparisons; and then, without loss of generality, I will focus on the auditory cortex for context. The auditory cortex is split into two sections which run in parallel to each other across the skull: the primary auditory cortex and the secondary auditory cortex. Three electrodes run over those cortex sections, which I call the: front, middle, and back. Respectively, the electrodes on the left side of skull are labelled T7 (left-front), TP7 (left-middle), and P7 (left-back), whereas the on the right side they are labelled T8 (right-front), TP8 (right-middle), P8 (right-back).
+To visualize the data, I will do two things: first I will normalize the time series using a min-max scaling to make the &mu;V amplitudes unitless, which I do to make effective comparisons; and then, without loss of generality, I will focus on the auditory cortex for context. The auditory cortex is split into two sections which run in parallel to each other across the skull: the primary auditory cortex and the secondary auditory cortex. Three electrodes run over those cortex sections, which I call the: front, middle, and back. Respectively, the electrodes on the left side of skull are labelled T7 (left-front), TP7 (left-middle), and P7 (left-back), whereas the on the right side they are labelled T8 (right-front), TP8 (right-middle), P8 (right-back).
 
 ![](https://raw.githubusercontent.com/cgpayne/electropsychographer/master/markdown_images/EEG_electrodes_diagram.png)
 

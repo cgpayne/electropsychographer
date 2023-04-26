@@ -6,8 +6,8 @@ feature_gen.py = generate features from the time series using ts-fresh
   Licence: GNU GPLv3
 DESCRIPTION
   this code is the work horse of the electropsychographer
-  it takes in the pruned data, concatenates it, then generates features of the
-    time series using a package called ts-fresh
+  it takes in the pruned data, normalizes it using min-max sclaing, concatenates it,
+    then generates features of the time series using a package called ts-fresh
   there tends to be around 54,810 features generated, which are reduced via
     PCA in the script (run_PCA.py) following feature_gen_post.py
   data is taken in from c_epg.pruned_dir, processed, and saved to c_epg.fgen_dir
@@ -62,6 +62,13 @@ class PatientDF():
             IN: selected_condition = the condition number to pull out, set in user_config.py
         '''
         self.df = self.df[self.df['condition'] == selected_condition]
+    
+    def normalize_time_series(self, electrodes: list) -> None:
+        '''
+        METHOD: normalize_time_series = normalize the time series using min-max scaling
+        '''
+        df_tmp = (self.df - self.df.min())/(self.df.max() - self.df.min())
+        self.df[electrodes] = df_tmp[electrodes]  # this throws a warning, oh well...
     
     # OBSOLETE: now using only one trial via data_pruning.py
     # def line_up_time_series(self):
@@ -119,13 +126,25 @@ if __name__ == '__main__':
         header = list(csv.reader(fin))[0]
     print(f"  -- header = {header}\n")
     
+    electrodes = header.copy()
+    electrodes.remove('subject')
+    electrodes.remove('trial')
+    electrodes.remove('condition')
+    electrodes.remove('sample')
+    print(f"  -- electrodes = {electrodes}\n")
+    
     print("- restructuring the data frames (tidy up + set condition)")
     for pp in pat_dat:
         pat_dat[pp].tidy_up(header)
         pat_dat[pp].set_condition(cfg.selected_condition)
+    print_first_three(pat_dat)
     t_now = ut.time_stamp(t_now, t_zero, 'tidy up + set condition')  # TIME STAMP
     
+    print("- normalize the time series")
+    for pp in pat_dat:
+        pat_dat[pp].normalize_time_series(electrodes)
     print_first_three(pat_dat)
+    t_now = ut.time_stamp(t_now, t_zero, 'normalize')  # TIME STAMP
     
     # OBSOLETE: now using only one trial via data_pruning.py
     # # put the waves in series
