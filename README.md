@@ -72,7 +72,7 @@ In this section I describe the structure of the code and how to run it in great 
 
 All the software is written in Python scripts (located in `epg/`) and Jupyter notebooks (located in `notebooks/models/`). Some notable packages used are: `ts-fresh`, `scikit-learn`, and `pytorch`. The Python version I used is `3.9.15` and there is a `requirements.txt` in the top directory.
 
-There are two main phases of the software: the *script phase* and the *notebook phase*. In the *script phase* I handle the data processing in a production-ready manner, which involves reformatting the data, generating features from the time series (using `ts-fresh`), removing outliers, creating stratified folds for cross validation, and finally running a PCA for dimensionality reduction. In the *notebook phase* I build the model in an exploratory manner, which uses the random forest algorithm that's optimized via a randomized search in a Jupyter notebook.
+There are two main phases of the software: the *script phase* and the *notebook phase*. In the *script phase* I handle the data processing in a production-ready manner, which involves reformatting the data, generating features from the normalized time series (using `ts-fresh`), removing outliers, creating stratified folds for cross validation, and finally running a PCA for dimensionality reduction. In the *notebook phase* I build the model in an exploratory manner, which uses the random forest algorithm that's optimized via a randomized search in a Jupyter notebook.
 
 ### Script Phase
 
@@ -102,13 +102,13 @@ The data is taken from the `archive_dir`, processed, and saved to the `pruned_di
 
 ###### 2 - Feature Generation
 
-I now use `ts-fresh` to generate a large range of features from the time series via the `epg/feature_gen.py` script and then some post-processing using the `epg/feature_gen_post.py` script.
+I now use `ts-fresh` to generate a large range of features from the time series (which I first normalize using min-max scaling) via the `epg/feature_gen.py` script and then some post-processing using the `epg/feature_gen_post.py` script.
 
 Set the config parameters, and then run:
 
 `python feature_gen.py`
 
-For the full dataset of all the patients, this will produce roughly 54,810 features from the time series in under an hour using the `EfficientFCParameters` setting from `ts-fresh`. With more computational resources, one may also use the `ComprehensiveFCParameters` to produce an additional 420 features.
+For the full dataset of all the patients, this will produce roughly 54,810 features from the normalized time series in under an hour using the `EfficientFCParameters` setting from `ts-fresh`. With more computational resources, one may also use the `ComprehensiveFCParameters` to produce an additional 420 features.
 
 There are many features which have all zeros exactly and also approximately (see the `eps_flat` parameter in the `user_config.py`). I excise those in `epg/feature_gen_post.py`, and also excise any features where there would be all zeros in the training data (see the `test_size_fpg` parameter in the `user_config.py`). I also impute the data overall. Run:
 
@@ -130,7 +130,7 @@ Note that you may use any other string in place of `kfold` to run a standard `te
 
 ###### 5 - PCA <a id="PCA"></a>
 
-To reduce the ~10<sup>4</sup> features generated from the time series to a more computationally efficient dimensionality, I use Principal Component Analysis (PCA). This will pay off when running models like random forest and alike, but I must make sure that I capture enough of the data's variance in a reasonable amount of principal components. To see the typical results of this PCA, refer to the [PCA](#pca-results) section - we can reduce the dimension to ~10. To run, try:
+To reduce the ~10<sup>4</sup> features generated from the normalized time series to a more computationally efficient dimensionality, I use Principal Component Analysis (PCA). This will pay off when running models like random forest and alike, but I must make sure that I capture enough of the data's variance in a reasonable amount of principal components. To see the typical results of this PCA, refer to the [PCA](#pca-results) section - we can reduce the dimension to ~10. To run, try:
 
 `python run_PCA.py pca cond1_pat1to81_outrmv_kfold-5 0 on`
 
@@ -172,21 +172,21 @@ making sure to set the `user_config.py` parameters before each submission. Then 
 
 # Model <a id="model"></a>
 
-In totality: the model used `ts-fresh` with `EfficientFCParamteres` to generate 54,810 features from the EEG time series, per condition; then I used a PCA via `sklearn.decomposition`to reduce the dimensionality to 60 principal components which capture 100% of the variance, per 5-fold for cross validation; and finally I used a random forest model `from sklearn.ensemble import RandomForestClassifier`, which I optimized using a random search, in `notebooks/models/random_forest_all.ipynb`.
+In totality: the model used `ts-fresh` with `EfficientFCParamteres` to generate 54,810 features from the normalized EEG time series, per condition; then I used a PCA via `sklearn.decomposition`to reduce the dimensionality to about 60 principal components which capture 100% of the variance, per 5-fold for cross validation; and finally I used a random forest model `from sklearn.ensemble import RandomForestClassifier`, which I optimized using a random search, in `notebooks/models/random_forest_all.ipynb`.
 
 ### PCA <a id="pca-results"></a>
 
-In a typical PCA, there was a reduction to 60 principal components. For condition 2 fold 0, for example, the cumulative explained variance went as follows:
+In a typical PCA, there was a reduction to around 60 principal components. For condition 2, for example, the cumulative explained variance went as follows:
 
-![](https://raw.githubusercontent.com/cgpayne/electropsychographer/master/markdown_images/PCA_cond2/cummulative_explained_variance.pdf)
+![](https://raw.githubusercontent.com/cgpayne/electropsychographer/master/markdown_images/PCA_cond2/cummulative_explained_variance.png)
 
-Somewhat ominously, there was no separation between healthy controls (HC) and patients with schizophrenia (SZ) in the PCA. However, we see that the first two principle components only capture 9.11% and 7.01% of the total variance:
+Somewhat ominously, there was no separation between healthy controls (HC) and patients with schizophrenia (SZ) in the PCA. However, we see that the first two principle components only capture 8.04% and 6.52% of the total variance:
 
-![](https://raw.githubusercontent.com/cgpayne/electropsychographer/master/markdown_images/cond2_fold0_pca/PC1_vs_PC2.png)
+![](https://raw.githubusercontent.com/cgpayne/electropsychographer/master/markdown_images/PCA_cond2/PC1_vs_PC2.png)
 
 ### Choice of Model
 
-I then chose to start with a random forest model on these 60 principal components. As can be seen in the [Visualization](#visualization), many cyclic patterns arise in the EEG brain waves (alpha, beta, gamma) which occur in the 1ms to 1sec time scale across the ~3sec time series recorded. This would suggest that a convolutional neural network (CNN) would be useful, since it is good at distinguishing these sorts of patterns independent of shifts in time. However, a random forest is more robust and more efficient than a CNN for non-linear structured data with few samples. This is because random forests account for overfitting of the model via bagging, whereas neural nets have a tendency to overfit, hence they require larger datasets. In the future I will also train a logistic regression and a neural net for the purpose of comparison.
+I then chose to start with a random forest model on the total ~60 principal components. As can be seen in the [Visualization](#visualization), many cyclic patterns arise in the EEG brain waves (alpha, beta, gamma) which occur in the 1ms to 1sec time scale across the ~3sec time series recorded. This would suggest that a convolutional neural network (CNN) would be useful, since it is good at distinguishing these sorts of patterns independent of shifts in time. However, a random forest is more robust and more efficient than a CNN for non-linear structured data with few samples. This is because random forests account for overfitting of the model via bagging, whereas neural nets have a tendency to overfit, hence they require larger datasets. In the future I will also train a logistic regression and a neural net for the purpose of comparison.
 
 ### Metrics
 
@@ -200,45 +200,39 @@ However, as we will see in the results, my model will predict 100% recall in all
 
 In this section we go over the preliminary results. For the unbalanced data, I used the `RandomForestClassifier(class_weight="balanced")` balanced classifier, and used a stratified 5-fold cross validation to keep the ratio of HC to SZ consistent. To optimize the hyper-parameters of the random forest (that is, the size of the random forest and the depth of the decision trees), I used the `RandomizedSearchCV` from `sklearn.model_selection`.
 
-As a control, we want to beat a model which predicts all 1's (ie, SZ's, which the data was unbalanced towards, 49 to 32), which gives an F1-score of approximately 0.75 per fold. I decided to run all three conditions to see if any of them had a good signature in distinguishing between HC's and SZ's, and I expected the condition where the button presses had resulting tones to give the best signature, because this would train the brain's suppression of its response to the expected stimuli more dramatically. **However, all three conditions did not give a signature which beat the control**.
+As a control, we want to beat a model which predicts all 1's (ie, SZ's, which the data was unbalanced towards, 49 to 32), which gives an F1-score of approximately 0.77. I decided to run all three conditions to see if any of them had a good signature in distinguishing between HC's and SZ's, and I expected the condition where the button presses had resulting tones to give the best signature, because this would train the brain's suppression of its response to the expected stimuli more dramatically. **However, all three conditions did not give a signature which beat the control**.
 
-For condition 1, the metrics worked out to:
+For condition 1, the metrics worked out to a recall of 90% and a F1-score of 0.72 (ie, the predictions don't beat the control):
 
-![](https://raw.githubusercontent.com/cgpayne/electropsychographer/master/markdown_images/cond1_metrics.png)
+![](https://raw.githubusercontent.com/cgpayne/electropsychographer/master/markdown_images/results/cond1_metrics.png)
 
-Note that the metrics are approximately the same between the control and the model. The best fold was fold 0, and the rest of the folds matched the control exactly. The confusion matrices of fold 0 and fold 1 are, respectively:
+Note that the metrics are approximately the same between the control and the model. The confusion matrix of the predictions on the test set of condition 1 is:
 
-![](https://raw.githubusercontent.com/cgpayne/electropsychographer/master/markdown_images/cond1_CM_fold0.png)
-
-![](https://raw.githubusercontent.com/cgpayne/electropsychographer/master/markdown_images/cond1_CM_fold1.png)
+![](https://raw.githubusercontent.com/cgpayne/electropsychographer/master/markdown_images/results/cond1_CM.png)
 
 One can see that the model is almost always predicting 1's (SZ), and note that the 0 class is HC.
 
-For condition 2, the metrics worked out to:
+For condition 2, the metrics worked out to a recall of 100% and a F1-score of 0.77:
 
-![](https://raw.githubusercontent.com/cgpayne/electropsychographer/master/markdown_images/cond2_metrics.png)
+![](https://raw.githubusercontent.com/cgpayne/electropsychographer/master/markdown_images/results/cond2_metrics.png)
 
-The best fold was fold 0, the worst fold was fold 2, and the rest of the folds matched the control exactly. The confusion matrices of fold 0 and fold 2 are, respectively:
+This means the predictions match the control exactly for condition 2, resulting in the following confusion matrix:
 
-![](https://raw.githubusercontent.com/cgpayne/electropsychographer/master/markdown_images/cond2_CM_fold0.png)
+![](https://raw.githubusercontent.com/cgpayne/electropsychographer/master/markdown_images/results/cond2_CM.png)
 
-![](https://raw.githubusercontent.com/cgpayne/electropsychographer/master/markdown_images/cond2_CM_fold2.png)
+And finally, for condition 3, the metrics also worked out to a recall of 100% and a F1-score of 0.77:
 
-And finally, for condition 3, the metrics worked out to:
+![](https://raw.githubusercontent.com/cgpayne/electropsychographer/master/markdown_images/results/cond3_metrics.png)
 
-![](https://raw.githubusercontent.com/cgpayne/electropsychographer/master/markdown_images/cond3_metrics.png)
+This means the predictions match the control exactly for condition 3, resulting in the following confusion matrix:
 
-The worst fold was fold 0, and the rest of the folds matched the control exactly. The confusion matrices of fold 0 and fold 1 are, respectively:
-
-![](https://raw.githubusercontent.com/cgpayne/electropsychographer/master/markdown_images/cond3_CM_fold0.png)
-
-![](https://raw.githubusercontent.com/cgpayne/electropsychographer/master/markdown_images/cond3_CM_fold1.png)
+![](https://raw.githubusercontent.com/cgpayne/electropsychographer/master/markdown_images/results/cond3_CM.png)
 
 # Conclusion and Future Work
 
-From the results above, we can see that all three conditions (the button presses with a subsequent tones, the button presses without any tones emitted, and the tone played repeatedly without a button press) yielded no signature which distinguishes between healthy controls and patients with schizophrenia. Using a random forest model, all three conditions could not beat the control of predicting that every test sample had schizophrenia, with an F1-score of 0.75.
+From the results above, we can see that all three conditions (the button presses with a subsequent tones, the button presses without any tones emitted, and the tone played repeatedly without a button press) yielded no signature which distinguishes between healthy controls and patients with schizophrenia. Using a random forest model, all three conditions could not beat the control of predicting that every test sample had schizophrenia, with an F1-score of 0.77.
 
-The next obvious question is: why was there no discernible signature? Since I accounted for the imbalance in the data with a stratified K-fold cross validation and a balanced random forest, and I tuned the hyper-parameters, I propose the following explanations: the features generated are insufficient or cluttered, the chosen model is lacking predictive power, there is not enough training data, or the EEG test is simply not good enough to distinguish between healthy controls and patients with schizophrenia - ie, there is no signature present in this dataset.
+The next obvious question is: why was there no discernible signature? Since I accounted for the imbalance in the data with a stratified K-fold cross validation and a balanced random forest, and I tuned the hyper-parameters, I propose the following remaining explanations: the features generated are insufficient or cluttered, the chosen model is lacking predictive power, there is not enough training data, or the EEG test is simply not good enough to distinguish between healthy controls and patients with schizophrenia - ie, there is no signature present in this dataset.
 
 It is possible that the features generated from `ts-fresh` are missing what is necessary to properly characterize an EEG, despite the sheer abundance of features generated. It is also possible that too many features are generated, and they combine with too much noise in the PCA. It would be worth doing a correlational analysis to see which features are most important to the response, or using a package or GitHub project which specifically generates features for EEG's.
 
@@ -246,9 +240,9 @@ In the future, I will also try to model with a logistic regression or a (convolu
 
 Since there were only 81 samples, 32 healthy controls and 49 patients with schizophrenia, it is conceivable that there is simply not enough data to train the model effectively. If possible, one could run a larger scale clinical trial to collect more data, but this would require a research proposal, funding, and the subsequent labour. **I suspect that this is the most likely source of a lack of signature in the model, and hesitate to conclude that there is no signature without more data**.
 
-With that said, there are hints that a signature is not present in the EEG under these conditions. If one takes the 60 principal components and maps them down to 2 UMAP components using a UMAP embedding, we see no separation between healthy controls and patients with schizophrenia. For condition 1 fold 0, the UMAP is:
+With that said, there are hints that a signature is not present in the EEG under these conditions. If one takes the total ~60 principal components and maps them down to 2 UMAP components using a UMAP embedding, we see no separation between healthy controls and patients with schizophrenia. For condition 1, the UMAP is:
 
-![](https://raw.githubusercontent.com/cgpayne/electropsychographer/master/markdown_images/cond1_fold0_UMAP_HC_SZ.png)
+![](https://raw.githubusercontent.com/cgpayne/electropsychographer/master/markdown_images/results/UMAP_cond1.png)
 
 where blue are the healthy controls, and orange are the patients with schizophrenia - and these results generalizes to the two other conditions.
 
