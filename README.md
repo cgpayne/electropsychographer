@@ -178,7 +178,7 @@ In totality: the model used `ts-fresh` with `EfficientFCParamteres` to generate 
 
 In a typical PCA, there was a reduction to 60 principal components. For condition 2 fold 0, for example, the cumulative explained variance went as follows:
 
-![](https://raw.githubusercontent.com/cgpayne/electropsychographer/master/markdown_images/cond2_fold0_pca/cummulative_explained_variance.png)
+![](https://raw.githubusercontent.com/cgpayne/electropsychographer/master/markdown_images/PCA_cond2/cummulative_explained_variance.pdf)
 
 Somewhat ominously, there was no separation between healthy controls (HC) and patients with schizophrenia (SZ) in the PCA. However, we see that the first two principle components only capture 9.11% and 7.01% of the total variance:
 
